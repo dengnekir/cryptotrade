@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "497052885543",
+    "project_id": "cryptotrade-61b57",
+    "storage_bucket": "cryptotrade-61b57.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497052885543:android:02eed07c86285b97456402",
+        "android_client_info": {
+          "package_name": "com.lrngroup.cryptotrade"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDminmuKPgzxzjNd0AKeUWHEYaCba8wU8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
