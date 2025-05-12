@@ -5,7 +5,7 @@ import 'register_view.dart';
 import 'forgot_password_view.dart';
 import '../../core/widgets/colors.dart';
 import '../../core/utils/validators.dart';
-import '../../profile/view/profile_view.dart';
+import '../../core/view/main_view.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -377,10 +377,10 @@ class _LoginViewContentState extends State<_LoginViewContent>
               final user = await viewModel.login();
 
               if (user != null && mounted) {
-                // Başarılı giriş, profil sayfasına yönlendir
+                // Başarılı giriş, ana sayfaya yönlendir
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const ProfileView()),
+                  MaterialPageRoute(builder: (context) => const MainView()),
                 );
               }
             } catch (e) {

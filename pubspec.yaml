@@ -34,14 +34,17 @@ dependencies:
   firebase_auth: ^4.15.3
   cloud_firestore: ^4.13.6
   firebase_storage: ^11.5.6
-  firebase_app_check: ^0.2.2
+  firebase_app_check: ^0.2.1+8
   provider: ^6.1.1
-  image_picker: ^1.0.5
+  image_picker: ^1.0.4
   glassmorphism: ^3.0.0
   cupertino_icons: ^1.0.2
   shared_preferences: ^2.5.3
   lottie: ^2.7.0
   cloudinary_sdk: ^5.0.0+1
+  font_awesome_flutter: ^10.6.0
+  timeago: ^3.6.0
+  device_info_plus: ^9.1.1
 
 dev_dependencies:
   flutter_test:

@@ -7,6 +7,7 @@ import 'login_view.dart';
 import '../../core/widgets/colors.dart';
 import '../../core/utils/validators.dart';
 import '../../profile/view/profile_view.dart';
+import '../../core/view/main_view.dart';
 
 class RegisterView extends StatelessWidget {
   const RegisterView({Key? key}) : super(key: key);
@@ -632,17 +633,16 @@ class _RegisterViewContentState extends State<_RegisterViewContent>
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
-                              'Kayıt başarılı! Profil sayfasına yönlendiriliyorsunuz...'),
+                              'Kayıt başarılı! Ana sayfaya yönlendiriliyorsunuz...'),
                           backgroundColor: colorss.primaryColor,
                         ),
                       );
 
-                      // Kısa bir gecikme ile kullanıcı profil sayfasına yönlendirilir
+                      // Kısa bir gecikme ile kullanıcı ana sayfaya yönlendirilir
                       Future.delayed(const Duration(seconds: 1), () {
                         if (mounted) {
                           Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(
-                                builder: (_) => const ProfileView()),
+                            MaterialPageRoute(builder: (_) => const MainView()),
                             (route) => false,
                           );
                         }

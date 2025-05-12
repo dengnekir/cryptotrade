@@ -23,40 +23,49 @@ class MainView extends StatelessWidget {
                 ProfileView(),
               ],
             ),
-            bottomNavigationBar: Container(
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 10,
-                    offset: const Offset(0, -5),
-                  ),
-                ],
+            bottomNavigationBar: Theme(
+              data: ThemeData(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
               ),
-              child: BottomNavigationBar(
-                currentIndex: viewModel.currentIndex,
-                onTap: viewModel.setCurrentIndex,
-                backgroundColor: Colors.black,
-                selectedItemColor: Colors.amber,
-                unselectedItemColor: Colors.grey,
-                type: BottomNavigationBarType.fixed,
-                items: const [
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.analytics_outlined),
-                    activeIcon: Icon(Icons.analytics),
-                    label: 'Analiz',
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                      color: Colors.grey.withOpacity(0.2),
+                      width: 0.5,
+                    ),
                   ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.history_outlined),
-                    activeIcon: Icon(Icons.history),
-                    label: 'Geçmiş',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.person_outline),
-                    activeIcon: Icon(Icons.person),
-                    label: 'Profil',
-                  ),
-                ],
+                ),
+                child: BottomNavigationBar(
+                  currentIndex: viewModel.currentIndex,
+                  onTap: (index) {
+                    viewModel.setCurrentIndex(index);
+                  },
+                  backgroundColor: Colors.black,
+                  selectedItemColor: Colors.amber,
+                  unselectedItemColor: Colors.grey,
+                  type: BottomNavigationBarType.fixed,
+                  selectedFontSize: 12,
+                  unselectedFontSize: 12,
+                  items: const [
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.analytics_outlined),
+                      activeIcon: Icon(Icons.analytics),
+                      label: 'Analiz',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.history_outlined),
+                      activeIcon: Icon(Icons.history),
+                      label: 'Geçmiş',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.person_outline),
+                      activeIcon: Icon(Icons.person),
+                      label: 'Profil',
+                    ),
+                  ],
+                ),
               ),
             ),
           );

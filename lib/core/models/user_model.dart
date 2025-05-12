@@ -6,7 +6,8 @@ class UserModel {
   final String name;
   final String surname;
   final String email;
-  String? profileImage;
+  late final String? profileImage;
+  final String? phone;
 
   UserModel({
     required this.uid,
@@ -14,6 +15,7 @@ class UserModel {
     required this.surname,
     required this.email,
     this.profileImage,
+    this.phone,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -34,6 +36,7 @@ class UserModel {
       profileImage: json['profileImage'] is String
           ? json['profileImage'] as String?
           : null,
+      phone: json['phone'] is String ? json['phone'] as String? : null,
     );
   }
 
@@ -44,6 +47,7 @@ class UserModel {
       'surname': surname,
       'email': email,
       'profileImage': profileImage,
+      'phone': phone,
     };
   }
 
@@ -53,6 +57,7 @@ class UserModel {
     String? surname,
     String? email,
     String? profileImage,
+    String? phone,
   }) {
     return UserModel(
       uid: uid ?? this.uid,
@@ -60,11 +65,12 @@ class UserModel {
       surname: surname ?? this.surname,
       email: email ?? this.email,
       profileImage: profileImage ?? this.profileImage,
+      phone: phone ?? this.phone,
     );
   }
 
   @override
   String toString() {
-    return 'UserModel(uid: $uid, name: $name, surname: $surname, email: $email, profileImage: $profileImage)';
+    return 'UserModel(uid: $uid, name: $name, surname: $surname, email: $email, profileImage: $profileImage, phone: $phone)';
   }
 }

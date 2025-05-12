@@ -91,7 +91,8 @@ class _SplashViewContentState extends State<_SplashViewContent>
                     center: Alignment.center,
                     radius: 1.5,
                     colors: [
-                      colorss.getPrimaryGlowColor()
+                      colorss
+                          .getPrimaryGlowColor()
                           .withOpacity(_glowAnimation.value * 0.3),
                       colorss.getSecondaryGlowColor(),
                     ],

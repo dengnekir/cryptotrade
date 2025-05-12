@@ -3,14 +3,22 @@ import 'package:provider/provider.dart';
 import '../viewmodel/profile_viewmodel.dart';
 import '../../register/view/login_view.dart';
 import '../../core/widgets/colors.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'support/profile_edit_view.dart';
+import 'support/device_history_view.dart';
+import 'support/account_delete_view.dart';
+import '../../register/view/forgot_password_view.dart';
+import '../../core/navigation/app_routes.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => ProfileViewModel(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ProfileViewModel()),
+      ],
       child: const _ProfileViewContent(),
     );
   }
@@ -40,17 +48,62 @@ class _ProfileViewContentState extends State<_ProfileViewContent> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text('Profil', style: TextStyle(color: Colors.white)),
+        elevation: 0,
+        backgroundColor: Colors.black,
+        title: const Text(
+          'Profil',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout, color: Colors.white),
+            icon: const FaIcon(
+              FontAwesomeIcons.rightFromBracket,
+              color: Colors.white,
+              size: 20,
+            ),
             onPressed: () async {
-              await viewModel.signOut();
-              if (mounted) {
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (_) => const LoginView()),
-                  (route) => false,
-                );
+              // Çıkış onayı dialog'u
+              final result = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  backgroundColor: Colors.grey[900],
+                  title: const Text(
+                    'Çıkış Yap',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  content: const Text(
+                    'Hesabınızdan çıkış yapmak istediğinize emin misiniz?',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: const Text('İptal'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: const Text(
+                        'Çıkış Yap',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+
+              if (result == true && mounted) {
+                await viewModel.signOut();
+                if (mounted) {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (_) => const LoginView()),
+                    (route) => false,
+                  );
+                }
               }
             },
           ),
@@ -114,29 +167,58 @@ class _ProfileViewContentState extends State<_ProfileViewContent> {
                         'Hesap ve Güvenlik',
                         [
                           _buildMenuItem(
-                            icon: Icons.email,
-                            title: 'E-posta / Telefon değiştirme',
-                            onTap: () {},
-                          ),
-                          _buildMenuItem(
-                            icon: Icons.security,
-                            title: 'İki faktörlü kimlik doğrulama (2FA)',
-                            onTap: () {},
+                            icon: Icons.edit,
+                            title: 'Profili Düzenle',
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const ProfileEditView(),
+                                ),
+                              );
+                            },
                           ),
                           _buildMenuItem(
                             icon: Icons.lock,
-                            title: 'Şifre güncelleme',
-                            onTap: () {},
+                            title: 'Şifre Sıfırlama',
+                            onTap: () async {
+                              final viewModel =
+                                  context.read<ProfileViewModel>();
+                              if (viewModel.userModel?.email != null) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => ForgotPasswordView(
+                                      initialEmail: viewModel.userModel!.email,
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
                           ),
                           _buildMenuItem(
                             icon: Icons.devices,
-                            title: 'Cihaz geçmişi ve aktif oturumlar',
-                            onTap: () {},
+                            title: 'Cihaz Geçmişi ve Aktif Oturumlar',
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const DeviceHistoryView(),
+                                ),
+                              );
+                            },
                           ),
                           _buildMenuItem(
                             icon: Icons.delete_forever,
-                            title: 'Hesap silme / devre dışı bırakma',
-                            onTap: () {},
+                            title: 'Hesap Silme',
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const AccountDeleteView(),
+                                ),
+                              );
+                            },
                             isDestructive: true,
                           ),
                         ],
@@ -147,12 +229,12 @@ class _ProfileViewContentState extends State<_ProfileViewContent> {
                         [
                           _buildMenuItem(
                             icon: Icons.card_membership,
-                            title: 'Mevcut abonelik planı',
+                            title: 'Mevcut Abonelik Planı',
                             onTap: () {},
                           ),
                           _buildMenuItem(
                             icon: Icons.history,
-                            title: 'Fatura geçmişi',
+                            title: 'Fatura Geçmişi',
                             onTap: () {},
                           ),
                         ],
@@ -189,18 +271,25 @@ class _ProfileViewContentState extends State<_ProfileViewContent> {
                         [
                           _buildMenuItem(
                             icon: Icons.support_agent,
-                            title: 'Canlı destek',
-                            onTap: () {},
+                            title: 'Canlı Destek',
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, AppRoutes.liveSupport);
+                            },
                           ),
                           _buildMenuItem(
                             icon: Icons.help,
                             title: 'SSS',
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.pushNamed(context, AppRoutes.faq);
+                            },
                           ),
                           _buildMenuItem(
                             icon: Icons.feedback,
-                            title: 'Geri bildirim gönder',
-                            onTap: () {},
+                            title: 'Geri Bildirim Gönder',
+                            onTap: () {
+                              Navigator.pushNamed(context, AppRoutes.feedback);
+                            },
                           ),
                         ],
                       ),
@@ -210,18 +299,27 @@ class _ProfileViewContentState extends State<_ProfileViewContent> {
                         [
                           _buildMenuItem(
                             icon: Icons.description,
-                            title: 'Kullanım şartları',
-                            onTap: () {},
+                            title: 'Kullanım Şartları',
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, AppRoutes.termsOfService);
+                            },
                           ),
                           _buildMenuItem(
                             icon: Icons.privacy_tip,
-                            title: 'Gizlilik politikası',
-                            onTap: () {},
+                            title: 'Gizlilik Politikası',
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, AppRoutes.privacyPolicy);
+                            },
                           ),
                           _buildMenuItem(
                             icon: Icons.warning_amber,
-                            title: 'Risk bildirimi',
-                            onTap: () {},
+                            title: 'Risk Bildirimi',
+                            onTap: () {
+                              Navigator.pushNamed(
+                                  context, AppRoutes.knowledgeBase);
+                            },
                           ),
                         ],
                       ),

@@ -1,10 +1,12 @@
+import 'package:cryptotrade/register/view/splash_view.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:provider/provider.dart';
 import 'core/viewmodel/auth_viewmodel.dart';
+import 'profile/viewmodel/profile_viewmodel.dart';
 import 'firebase_options.dart';
-import 'core/view/main_view.dart';
+import 'core/navigation/app_routes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,9 +18,8 @@ void main() async {
 
   // Firebase App Check'i başlat
   await FirebaseAppCheck.instance.activate(
-    // Debug modunda sahte token kullan
-    androidProvider: AndroidProvider.debug,
-    appleProvider: AppleProvider.debug,
+    androidProvider: AndroidProvider.playIntegrity,
+    appleProvider: AppleProvider.appAttest,
   );
 
   runApp(const MyApp());
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
+        ChangeNotifierProvider(create: (_) => ProfileViewModel()),
       ],
       child: MaterialApp(
         title: 'CryptoTrade',
@@ -48,7 +50,8 @@ class MyApp extends StatelessWidget {
             bodyMedium: TextStyle(color: Colors.white),
           ),
         ),
-        home: const MainView(),
+        home: const SplashView(),
+        routes: AppRoutes.routes,
       ),
     );
   }

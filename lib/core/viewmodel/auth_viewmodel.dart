@@ -11,10 +11,12 @@ class AuthViewModel extends ChangeNotifier {
   AuthStatus _status = AuthStatus.initial;
   String? _errorMessage;
   UserModel? _user;
+  bool _isLoading = false;
 
   AuthStatus get status => _status;
   String? get errorMessage => _errorMessage;
   UserModel? get user => _user;
+  bool get isLoading => _isLoading;
 
   AuthViewModel() {
     _auth.authStateChanges().listen((user) async {
@@ -107,6 +109,26 @@ class AuthViewModel extends ChangeNotifier {
     } finally {
       _status = AuthStatus.unauthenticated;
       notifyListeners();
+    }
+  }
+
+  void setLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
+
+  Future<bool> checkAuthStatus() async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        // Kullanıcının token'ının geçerliliğini kontrol et
+        await user.getIdToken(true);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      print('Auth durumu kontrol edilirken hata: $e');
+      return false;
     }
   }
 }

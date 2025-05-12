@@ -3,261 +3,217 @@ import 'package:provider/provider.dart';
 import '../viewmodel/login_viewmodel.dart';
 import '../../core/widgets/colors.dart';
 import '../../core/utils/validators.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class ForgotPasswordView extends StatelessWidget {
-  const ForgotPasswordView({Key? key}) : super(key: key);
+class ForgotPasswordView extends StatefulWidget {
+  final String? initialEmail;
 
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => LoginViewModel(),
-      child: const _ForgotPasswordContent(),
-    );
-  }
-}
-
-class _ForgotPasswordContent extends StatefulWidget {
-  const _ForgotPasswordContent({Key? key}) : super(key: key);
+  const ForgotPasswordView({
+    Key? key,
+    this.initialEmail,
+  }) : super(key: key);
 
   @override
-  _ForgotPasswordContentState createState() => _ForgotPasswordContentState();
+  State<ForgotPasswordView> createState() => _ForgotPasswordViewState();
 }
 
-class _ForgotPasswordContentState extends State<_ForgotPasswordContent>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
+class _ForgotPasswordViewState extends State<ForgotPasswordView> {
   final _formKey = GlobalKey<FormState>();
+  late TextEditingController _emailController;
   String? _errorMessage;
+  bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1000),
-    );
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
-    );
-    _animationController.forward();
+    _emailController = TextEditingController(text: widget.initialEmail);
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<LoginViewModel>();
-    final screenSize = MediaQuery.of(context).size;
-
     return Scaffold(
-      backgroundColor: colorss.backgroundColorLight,
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: colorss.backgroundColorLight,
+        backgroundColor: Colors.black,
         elevation: 0,
+        title: Text(
+          widget.initialEmail != null ? 'Şifre Sıfırlama' : 'Şifremi Unuttum',
+          style: const TextStyle(color: Colors.white),
+        ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: colorss.primaryColor),
+          icon: const FaIcon(FontAwesomeIcons.arrowLeft, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(
-          'Şifremi Unuttum',
-          style: TextStyle(color: colorss.textColor),
-        ),
       ),
-      body: Stack(
-        children: [
-          // Geliştirilmiş Arkaplan Gradyanı
-          AnimatedBuilder(
-            animation: _fadeAnimation,
-            builder: (context, child) {
-              return Container(
-                decoration: BoxDecoration(
-                  gradient: RadialGradient(
-                    center: Alignment.bottomRight,
-                    radius: 1.8,
-                    colors: [
-                      colorss
-                          .getPrimaryGlowColor()
-                          .withOpacity(_fadeAnimation.value * 0.25),
-                      colorss.getSecondaryGlowColor(),
-                    ],
-                    stops: [0.2, 0.8],
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                widget.initialEmail != null
+                    ? 'Şifrenizi sıfırlamak için e-posta adresinize bir bağlantı göndereceğiz.'
+                    : 'Şifrenizi sıfırlamak için kayıtlı e-posta adresinizi girin.',
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 16,
+                ),
+              ),
+              const SizedBox(height: 24),
+              TextFormField(
+                controller: _emailController,
+                style: const TextStyle(color: Colors.white),
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  labelText: 'E-posta',
+                  labelStyle: TextStyle(color: Colors.grey[400]),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey[800]!),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.amber),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey[900]?.withOpacity(0.5),
+                  prefixIcon: const Icon(
+                    Icons.email_outlined,
+                    color: Colors.amber,
                   ),
                 ),
-              );
-            },
-          ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'E-posta adresi gerekli';
+                  }
+                  if (!value.contains('@') || !value.contains('.')) {
+                    return 'Geçerli bir e-posta adresi girin';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.amber,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: _isLoading
+                    ? null
+                    : () async {
+                        if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            _isLoading = true;
+                            _errorMessage = null;
+                          });
 
-          // Ana içerik
-          SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: screenSize.width * 0.05),
-                child: FadeTransition(
-                  opacity: _fadeAnimation,
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: screenSize.height * 0.05),
-                        Text(
-                          'Şifrenizi mi unuttunuz?',
-                          style: TextStyle(
-                            color: colorss.textColor,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            shadows: [
-                              Shadow(
-                                color: colorss.textColor.withOpacity(0.5),
-                                blurRadius: 5,
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          'E-posta adresinizi girin, size şifre sıfırlama bağlantısı gönderelim.',
-                          style: TextStyle(
-                            color: colorss.textColorSecondary,
-                            fontSize: 16,
-                          ),
-                        ),
-                        SizedBox(height: screenSize.height * 0.05),
+                          try {
+                            await FirebaseAuth.instance.sendPasswordResetEmail(
+                                email: _emailController.text.trim());
 
-                        // Hata mesajı
-                        if (_errorMessage != null)
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            margin: const EdgeInsets.only(bottom: 20),
-                            decoration: BoxDecoration(
-                              color: colorss.primaryColor.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: colorss.primaryColor,
-                                width: 1,
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.error_outline,
-                                  color: colorss.primaryColor,
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                      'Şifre sıfırlama bağlantısı e-posta adresinize gönderildi'),
+                                  backgroundColor: Colors.green,
                                 ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Text(
-                                    _errorMessage!,
-                                    style: TextStyle(
-                                      color: colorss.primaryColor,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                        Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color:
-                                colorss.backgroundColorLight.withOpacity(0.3),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: colorss.primaryColor.withOpacity(0.2),
-                              width: 1,
-                            ),
-                          ),
-                          child: _buildEmailField(viewModel),
+                              );
+                              Navigator.pop(context);
+                            }
+                          } catch (e) {
+                            setState(() {
+                              if (e is FirebaseAuthException) {
+                                switch (e.code) {
+                                  case 'user-not-found':
+                                    _errorMessage =
+                                        'Bu e-posta adresi ile kayıtlı kullanıcı bulunamadı';
+                                    break;
+                                  case 'invalid-email':
+                                    _errorMessage =
+                                        'Geçerli bir e-posta adresi girin';
+                                    break;
+                                  default:
+                                    _errorMessage =
+                                        'Bir hata oluştu. Lütfen tekrar deneyin';
+                                }
+                              } else {
+                                _errorMessage =
+                                    'Bir hata oluştu. Lütfen tekrar deneyin';
+                              }
+                            });
+                          } finally {
+                            if (mounted) {
+                              setState(() {
+                                _isLoading = false;
+                              });
+                            }
+                          }
+                        }
+                      },
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          color: Colors.black,
+                          strokeWidth: 2,
                         ),
-                        SizedBox(height: screenSize.height * 0.05),
-                        _buildResetButton(viewModel),
-                      ],
+                      )
+                    : const Text(
+                        'Şifre Sıfırlama Bağlantısı Gönder',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+              ),
+              if (_errorMessage != null) ...[
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.red.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.red,
+                      width: 1,
                     ),
                   ),
-                ),
-              ),
-            ),
-          ),
-
-          // Yükleme göstergesi
-          if (viewModel.isLoading)
-            Container(
-              color: colorss.getOverlayColor(),
-              child: Center(
-                child: CircularProgressIndicator(
-                  valueColor:
-                      AlwaysStoppedAnimation<Color>(colorss.primaryColor),
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEmailField(LoginViewModel viewModel) {
-    return Container(
-      decoration: colorss.getInputDecoration(),
-      child: TextFormField(
-        controller: viewModel.emailController,
-        style: const TextStyle(color: colorss.textColor),
-        decoration: colorss
-            .getTextFieldDecoration(
-              labelText: 'E-posta',
-              prefixIcon: Icons.email_outlined,
-            )
-            .copyWith(
-              errorStyle: const TextStyle(
-                color: colorss.primaryColorLight,
-              ),
-            ),
-        validator: Validators.validateEmail,
-      ),
-    );
-  }
-
-  Widget _buildResetButton(LoginViewModel viewModel) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () async {
-          if (_formKey.currentState?.validate() ?? false) {
-            try {
-              setState(() {
-                _errorMessage = null;
-              });
-              await viewModel.resetPassword();
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                        'Şifre sıfırlama bağlantısı e-posta adresinize gönderildi'),
-                    backgroundColor: colorss.primaryColor,
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.error_outline,
+                        color: Colors.red,
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          _errorMessage!,
+                          style: const TextStyle(
+                            color: Colors.red,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                );
-                Navigator.pop(context);
-              }
-            } catch (e) {
-              setState(() {
-                _errorMessage = e.toString();
-              });
-            }
-          }
-        },
-        style: colorss.getPrimaryButtonStyle(),
-        child: Text(
-          'Şifremi Sıfırla',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
+                ),
+              ],
+            ],
           ),
         ),
       ),
