@@ -16,10 +16,10 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 0.1.0
+version: 1.0.0+1
 
 environment:
-  sdk: ">=3.1.3 <4.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -45,6 +45,10 @@ dependencies:
   font_awesome_flutter: ^10.6.0
   timeago: ^3.6.0
   device_info_plus: ^9.1.1
+  url_launcher: ^6.2.5
+  android_intent_plus: ^4.0.3
+  device_apps: ^2.2.0
+  google_ml_kit: ^0.16.3
 
 dev_dependencies:
   flutter_test:

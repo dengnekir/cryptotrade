@@ -1,153 +1,74 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../viewmodel/live_support_viewmodel.dart';
 
-class LiveSupportView extends StatefulWidget {
+class LiveSupportView extends StatelessWidget {
   const LiveSupportView({Key? key}) : super(key: key);
 
   @override
-  State<LiveSupportView> createState() => _LiveSupportViewState();
-}
-
-class _LiveSupportViewState extends State<LiveSupportView> {
-  final TextEditingController _messageController = TextEditingController();
-  final List<ChatMessage> _messages = [];
-  bool _isConnecting = true;
-
-  @override
-  void initState() {
-    super.initState();
-    // Simulate connecting to support
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted) {
-        setState(() {
-          _isConnecting = false;
-          _messages.add(
-            const ChatMessage(
-              message: 'Merhaba! Size nasıl yardımcı olabilirim?',
-              isSupport: true,
-            ),
-          );
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _messageController.dispose();
-    super.dispose();
-  }
-
-  void _sendMessage() {
-    if (_messageController.text.trim().isEmpty) return;
-
-    setState(() {
-      _messages.add(
-        ChatMessage(
-          message: _messageController.text,
-          isSupport: false,
-        ),
-      );
-    });
-
-    _messageController.clear();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Canlı Destek'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: _isConnecting
-          ? const Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 16),
-                  Text(
-                    'Destek temsilcisine bağlanılıyor...',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ],
-              ),
-            )
-          : Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: _messages.length,
-                    itemBuilder: (context, index) {
-                      return _messages[index];
-                    },
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  color: Colors.white10,
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _messageController,
-                          style: const TextStyle(color: Colors.white),
-                          decoration: const InputDecoration(
-                            hintText: 'Mesajınızı yazın...',
-                            hintStyle: TextStyle(color: Colors.white54),
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.send,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        onPressed: _sendMessage,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-    );
-  }
-}
-
-class ChatMessage extends StatelessWidget {
-  final String message;
-  final bool isSupport;
-
-  const ChatMessage({
-    Key? key,
-    required this.message,
-    required this.isSupport,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: isSupport ? Alignment.centerLeft : Alignment.centerRight,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          color: isSupport ? Colors.white10 : Theme.of(context).primaryColor,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width * 0.75,
-        ),
-        child: Text(
-          message,
-          style: TextStyle(
-            color: isSupport ? Colors.white : Colors.black,
+    return ChangeNotifierProvider(
+      create: (_) => LiveSupportViewModel(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Canlı Destek'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+            onPressed: () => Navigator.pop(context),
           ),
+        ),
+        body: Consumer<LiveSupportViewModel>(
+          builder: (context, viewModel, child) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.support_agent,
+                      size: 100,
+                      color: Colors.amber,
+                    ),
+                    const SizedBox(height: 24),
+                    const Text(
+                      'Size nasıl yardımcı olabiliriz?',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Destek ekibimiz WhatsApp üzerinden size yardımcı olmak için hazır.',
+                      style: TextStyle(fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 32),
+                    ElevatedButton.icon(
+                      onPressed: () => viewModel.openWhatsApp(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 32,
+                          vertical: 16,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      icon: const Icon(Icons.message, size: 28),
+                      label: const Text(
+                        'WhatsApp ile İletişime Geç',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

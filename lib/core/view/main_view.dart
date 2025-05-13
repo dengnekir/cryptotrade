@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../history/view/analysis_history_view.dart';
 import '../../profile/view/profile_view.dart';
 import '../viewmodel/main_viewmodel.dart';
-import '../../analysis/analysis_view.dart';
-import '../../history/history_view.dart';
+import '../../analysis/view/analysis_view.dart';
 
 class MainView extends StatelessWidget {
   const MainView({super.key});
@@ -19,7 +19,7 @@ class MainView extends StatelessWidget {
               index: viewModel.currentIndex,
               children: const [
                 AnalysisView(),
-                HistoryView(),
+                AnalysisHistoryView(),
                 ProfileView(),
               ],
             ),

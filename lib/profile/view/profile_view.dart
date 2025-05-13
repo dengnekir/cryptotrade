@@ -9,6 +9,12 @@ import 'support/device_history_view.dart';
 import 'support/account_delete_view.dart';
 import '../../register/view/forgot_password_view.dart';
 import '../../core/navigation/app_routes.dart';
+import 'subscription/subscription_plan_view.dart';
+import 'subscription/billing_history_view.dart';
+import 'crypto_preferences/favorite_coins_view.dart';
+import 'crypto_preferences/notification_settings_view.dart';
+import 'crypto_preferences/analysis_preferences_view.dart';
+import 'crypto_preferences/risk_level_view.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({Key? key}) : super(key: key);
@@ -230,12 +236,26 @@ class _ProfileViewContentState extends State<_ProfileViewContent> {
                           _buildMenuItem(
                             icon: Icons.card_membership,
                             title: 'Mevcut Abonelik Planı',
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const SubscriptionPlanView(),
+                                ),
+                              );
+                            },
                           ),
                           _buildMenuItem(
                             icon: Icons.history,
                             title: 'Fatura Geçmişi',
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const BillingHistoryView(),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
@@ -246,22 +266,52 @@ class _ProfileViewContentState extends State<_ProfileViewContent> {
                           _buildMenuItem(
                             icon: Icons.star,
                             title: 'Favori Coinler',
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const FavoriteCoinsView(),
+                                ),
+                              );
+                            },
                           ),
                           _buildMenuItem(
                             icon: Icons.notifications,
                             title: 'Alarm & Bildirim Ayarları',
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      const NotificationSettingsView(),
+                                ),
+                              );
+                            },
                           ),
                           _buildMenuItem(
                             icon: Icons.analytics,
                             title: 'Analiz Tercihleri',
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      const AnalysisPreferencesView(),
+                                ),
+                              );
+                            },
                           ),
                           _buildMenuItem(
                             icon: Icons.warning,
                             title: 'Risk Seviyesi Seçimi',
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const RiskLevelView(),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
@@ -311,14 +361,6 @@ class _ProfileViewContentState extends State<_ProfileViewContent> {
                             onTap: () {
                               Navigator.pushNamed(
                                   context, AppRoutes.privacyPolicy);
-                            },
-                          ),
-                          _buildMenuItem(
-                            icon: Icons.warning_amber,
-                            title: 'Risk Bildirimi',
-                            onTap: () {
-                              Navigator.pushNamed(
-                                  context, AppRoutes.knowledgeBase);
                             },
                           ),
                         ],

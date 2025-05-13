@@ -5,6 +5,7 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:provider/provider.dart';
 import 'core/viewmodel/auth_viewmodel.dart';
 import 'profile/viewmodel/profile_viewmodel.dart';
+import 'analysis/viewmodel/analysis_viewmodel.dart';
 import 'firebase_options.dart';
 import 'core/navigation/app_routes.dart';
 
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
+        ChangeNotifierProvider(create: (_) => AnalysisViewModel()),
       ],
       child: MaterialApp(
         title: 'CryptoTrade',
