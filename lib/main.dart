@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'core/viewmodel/auth_viewmodel.dart';
 import 'profile/viewmodel/profile_viewmodel.dart';
 import 'analysis/viewmodel/analysis_viewmodel.dart';
+import 'core/services/ai_analysis_service.dart';
+import 'core/constants/api_constants.dart';
 import 'firebase_options.dart';
 import 'core/navigation/app_routes.dart';
 
@@ -35,7 +37,22 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthViewModel()),
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
-        ChangeNotifierProvider(create: (_) => AnalysisViewModel()),
+        Provider<AIAnalysisService>(
+          create: (_) => AIAnalysisService(
+            apiKey: ApiConstants.aiAnalysisApiKey,
+            apiUrl: ApiConstants.aiAnalysisApiUrl,
+          ),
+        ),
+        ChangeNotifierProxyProvider<AIAnalysisService, AnalysisViewModel>(
+          create: (_) => AnalysisViewModel(
+            aiService: AIAnalysisService(
+              apiKey: ApiConstants.aiAnalysisApiKey,
+              apiUrl: ApiConstants.aiAnalysisApiUrl,
+            ),
+          ),
+          update: (_, aiService, previous) =>
+              previous!..updateService(aiService),
+        ),
       ],
       child: MaterialApp(
         title: 'CryptoTrade',

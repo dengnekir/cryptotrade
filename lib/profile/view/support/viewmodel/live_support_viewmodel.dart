@@ -2,7 +2,6 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io' show Platform;
-import 'package:device_apps/device_apps.dart';
 
 class LiveSupportViewModel extends ChangeNotifier {
   Future<void> openWhatsApp() async {
@@ -11,19 +10,27 @@ class LiveSupportViewModel extends ChangeNotifier {
 
     try {
       if (Platform.isAndroid) {
-        // Önce WhatsApp'ın yüklü olup olmadığını kontrol et
-        final isWhatsAppInstalled =
-            await DeviceApps.isAppInstalled('com.whatsapp');
+        // WhatsApp URL'ini hazırla
+        final whatsappUrl = Uri.parse(
+            'https://api.whatsapp.com/send?phone=$phoneNumber&text=${Uri.encodeComponent(message)}');
 
-        if (isWhatsAppInstalled) {
+        // URL'i açmaya çalış
+        if (await canLaunchUrl(whatsappUrl)) {
+          // Android'de intent kullanarak açmayı dene
           final intent = AndroidIntent(
             action: 'android.intent.action.VIEW',
             data: Uri.encodeFull(
                 'https://api.whatsapp.com/send?phone=$phoneNumber&text=$message'),
             package: 'com.whatsapp',
           );
-          await intent.launch();
-          return;
+
+          try {
+            await intent.launch();
+            return;
+          } catch (e) {
+            // Intent açılamazsa, tarayıcı ile açmayı dene
+            await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
+          }
         } else {
           debugPrint('WhatsApp yüklü değil, Play Store\'a yönlendiriliyor...');
           final playStoreUrl = Uri.parse(

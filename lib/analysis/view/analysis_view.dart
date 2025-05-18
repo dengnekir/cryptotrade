@@ -14,24 +14,41 @@ class AnalysisView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Grafik Analizi'),
         centerTitle: true,
+        actions: [
+          Consumer<AnalysisViewModel>(
+            builder: (context, viewModel, _) {
+              return viewModel.analysisResult != null
+                  ? IconButton(
+                      icon: const Icon(Icons.refresh),
+                      onPressed: () => viewModel.resetAnalysis(),
+                    )
+                  : const SizedBox.shrink();
+            },
+          ),
+        ],
       ),
       body: Consumer<AnalysisViewModel>(
         builder: (context, viewModel, child) {
           return SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _buildImageSection(context, viewModel),
-                  const SizedBox(height: 20),
-                  if (viewModel.isLoading)
-                    const Center(child: CircularProgressIndicator())
-                  else if (viewModel.error != null)
-                    _buildErrorWidget(viewModel.error!)
-                  else if (viewModel.analysisResult != null)
-                    _buildAnalysisResults(viewModel.analysisResult!),
-                ],
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _buildImageSection(context, viewModel),
+                    const SizedBox(height: 20),
+                    if (viewModel.selectedImage != null)
+                      _buildSelectedImage(viewModel.selectedImage!),
+                    const SizedBox(height: 20),
+                    if (viewModel.isLoading)
+                      const Center(child: CircularProgressIndicator())
+                    else if (viewModel.error != null)
+                      _buildErrorWidget(viewModel.error!)
+                    else if (viewModel.analysisResult != null)
+                      _buildAnalysisResults(viewModel.analysisResult!),
+                  ],
+                ),
               ),
             ),
           );
@@ -68,6 +85,34 @@ class AnalysisView extends StatelessWidget {
                   () => _pickImage(context, ImageSource.gallery),
                 ),
               ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSelectedImage(File image) {
+    return Card(
+      color: Colors.grey[900],
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Seçilen Grafik',
+              style: TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 12),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.file(
+                image,
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
           ],
         ),
@@ -114,6 +159,11 @@ class AnalysisView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const Text(
+              'Analiz Sonuçları',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
             _buildResultRow('Alış Olasılığı:',
                 '${result.buyProbability.toStringAsFixed(1)}%'),
             _buildResultRow('Satış Olasılığı:',
@@ -123,8 +173,49 @@ class AnalysisView extends StatelessWidget {
             _buildResultRow('Short Olasılığı:',
                 '${result.shortProbability.toStringAsFixed(1)}%'),
             const Divider(color: Colors.grey),
-            _buildResultRow('Tavsiye:', result.recommendation),
-            _buildResultRow('Güven Seviyesi:', result.confidenceLevel),
+            _buildRecommendationCard(
+                result.recommendation, result.confidenceLevel),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRecommendationCard(
+      String recommendation, String confidenceLevel) {
+    Color cardColor;
+
+    if (recommendation.contains('AL') || recommendation.contains('LONG')) {
+      cardColor = Colors.green[900]!;
+    } else if (recommendation.contains('SAT') ||
+        recommendation.contains('SHORT')) {
+      cardColor = Colors.red[900]!;
+    } else {
+      cardColor = Colors.amber[900]!;
+    }
+
+    return Card(
+      color: cardColor,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Text(
+              recommendation,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Güven Seviyesi: $confidenceLevel',
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.white,
+              ),
+            ),
           ],
         ),
       ),

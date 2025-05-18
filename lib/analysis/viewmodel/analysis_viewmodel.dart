@@ -1,50 +1,37 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import '../../core/services/ai_analysis_service.dart';
 import '../model/analysis_model.dart';
-import 'package:google_ml_kit/google_ml_kit.dart';
 
 class AnalysisViewModel extends ChangeNotifier {
+  AIAnalysisService _aiService;
   AnalysisResult? _analysisResult;
   bool _isLoading = false;
   String? _error;
+  File? _selectedImage;
+
+  AnalysisViewModel({
+    required AIAnalysisService aiService,
+  }) : _aiService = aiService;
 
   AnalysisResult? get analysisResult => _analysisResult;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  File? get selectedImage => _selectedImage;
+
+  void updateService(AIAnalysisService aiService) {
+    _aiService = aiService;
+  }
 
   Future<void> analyzeImage(File imageFile) async {
     try {
       _isLoading = true;
       _error = null;
+      _selectedImage = imageFile;
       notifyListeners();
 
-      // Görüntüyü ML Kit ile işleme
-      final inputImage = InputImage.fromFile(imageFile);
-      final textRecognizer = GoogleMlKit.vision.textRecognizer();
-      final RecognizedText recognizedText =
-          await textRecognizer.processImage(inputImage);
-
-      // Metin analizi sonuçlarını işleme
-      final String text = recognizedText.text.toLowerCase();
-
-      // Basit bir analiz algoritması (gerçek uygulamada daha gelişmiş olmalı)
-      double buyProb =
-          _calculateProbability(text, ['yükseliş', 'al', 'pozitif']);
-      double sellProb =
-          _calculateProbability(text, ['düşüş', 'sat', 'negatif']);
-      double longProb = _calculateProbability(text, ['uzun vadeli', 'long']);
-      double shortProb = _calculateProbability(text, ['kısa vadeli', 'short']);
-
-      _analysisResult = AnalysisResult(
-        buyProbability: buyProb,
-        sellProbability: sellProb,
-        longProbability: longProb,
-        shortProbability: shortProb,
-        recommendation: _generateRecommendation(buyProb, sellProb),
-        confidenceLevel: _calculateConfidenceLevel(buyProb, sellProb),
-      );
-
-      await textRecognizer.close();
+      // Yapay zeka servisi çağrısı
+      _analysisResult = await _aiService.analyzeImage(imageFile);
     } catch (e) {
       _error = 'Görüntü analizi sırasında bir hata oluştu: $e';
     } finally {
@@ -82,6 +69,7 @@ class AnalysisViewModel extends ChangeNotifier {
     _analysisResult = null;
     _error = null;
     _isLoading = false;
+    _selectedImage = null;
     notifyListeners();
   }
 }
