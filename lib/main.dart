@@ -1,17 +1,15 @@
-import 'package:cryptotrade/register/view/splash_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
-import 'package:provider/provider.dart';
-import 'core/viewmodel/auth_viewmodel.dart';
-import 'profile/viewmodel/profile_viewmodel.dart';
-import 'analysis/viewmodel/analysis_viewmodel.dart';
-import 'core/services/ai_analysis_service.dart';
-import 'core/constants/api_constants.dart';
 import 'firebase_options.dart';
+import 'register/view/splash_view.dart';
+import 'core/services/preferences_service.dart';
+import 'core/providers/theme_provider.dart';
 import 'core/navigation/app_routes.dart';
 
 void main() async {
+  // Flutter binding'i başlat
   WidgetsFlutterBinding.ensureInitialized();
 
   // Firebase'i başlat
@@ -25,53 +23,44 @@ void main() async {
     appleProvider: AppleProvider.appAttest,
   );
 
-  runApp(const MyApp());
+  // Preferences Service'i başlat
+  final preferencesService = PreferencesService();
+  await preferencesService.init();
+
+  // Uygulamayı Riverpod ProviderScope ile sarmalayarak başlat
+  runApp(
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends ConsumerWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => AuthViewModel()),
-        ChangeNotifierProvider(create: (_) => ProfileViewModel()),
-        Provider<AIAnalysisService>(
-          create: (_) => AIAnalysisService(
-            apiKey: ApiConstants.aiAnalysisApiKey,
-            apiUrl: ApiConstants.aiAnalysisApiUrl,
-          ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Tema sağlayıcısını izle
+    final themeMode = ref.watch(themeModeProvider);
+
+    return MaterialApp(
+      title: 'CryptoTrade',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.amber,
+        scaffoldBackgroundColor: Colors.black87,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
         ),
-        ChangeNotifierProxyProvider<AIAnalysisService, AnalysisViewModel>(
-          create: (_) => AnalysisViewModel(
-            aiService: AIAnalysisService(
-              apiKey: ApiConstants.aiAnalysisApiKey,
-              apiUrl: ApiConstants.aiAnalysisApiUrl,
-            ),
-          ),
-          update: (_, aiService, previous) =>
-              previous!..updateService(aiService),
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(color: Colors.white),
+          bodyMedium: TextStyle(color: Colors.white),
         ),
-      ],
-      child: MaterialApp(
-        title: 'CryptoTrade',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.amber,
-          scaffoldBackgroundColor: Colors.black87,
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-          ),
-          textTheme: const TextTheme(
-            bodyLarge: TextStyle(color: Colors.white),
-            bodyMedium: TextStyle(color: Colors.white),
-          ),
-        ),
-        home: const SplashView(),
-        routes: AppRoutes.routes,
       ),
+      themeMode: themeMode,
+      home: const SplashView(),
+      routes: AppRoutes.routes,
     );
   }
 }

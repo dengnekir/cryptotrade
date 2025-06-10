@@ -1,272 +1,275 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-import '../model/analysis_model.dart';
-import '../viewmodel/analysis_viewmodel.dart';
+import '../../core/providers/analysis_provider.dart';
+import '../../core/widgets/colors.dart';
 
-class AnalysisView extends StatelessWidget {
+class AnalysisView extends ConsumerWidget {
   const AnalysisView({Key? key}) : super(key: key);
 
+  Future<void> _pickImage(
+      BuildContext context, WidgetRef ref, ImageSource source) async {
+    final pickedFile = await ImagePicker().pickImage(source: source);
+    if (pickedFile != null) {
+      ref.read(analysisProvider.notifier).selectImage(File(pickedFile.path));
+    }
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final analysisState = ref.watch(analysisProvider);
+
     return Scaffold(
+      backgroundColor: colorss.backgroundColor,
       appBar: AppBar(
-        title: const Text('Grafik Analizi'),
-        centerTitle: true,
-        actions: [
-          Consumer<AnalysisViewModel>(
-            builder: (context, viewModel, _) {
-              return viewModel.analysisResult != null
-                  ? IconButton(
-                      icon: const Icon(Icons.refresh),
-                      onPressed: () => viewModel.resetAnalysis(),
-                    )
-                  : const SizedBox.shrink();
-            },
-          ),
-        ],
+        backgroundColor: colorss.backgroundColor,
+        elevation: 0,
+        title: Text(
+          'Coin Analizi',
+          style: TextStyle(color: colorss.textColor),
+        ),
+        actions: analysisState.selectedImage != null
+            ? [
+                IconButton(
+                  icon: const Icon(Icons.refresh),
+                  onPressed: () =>
+                      ref.read(analysisProvider.notifier).resetAnalysis(),
+                )
+              ]
+            : null,
       ),
-      body: Consumer<AnalysisViewModel>(
-        builder: (context, viewModel, child) {
-          return SafeArea(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _buildImageSection(context, viewModel),
-                    const SizedBox(height: 20),
-                    if (viewModel.selectedImage != null)
-                      _buildSelectedImage(viewModel.selectedImage!),
-                    const SizedBox(height: 20),
-                    if (viewModel.isLoading)
-                      const Center(child: CircularProgressIndicator())
-                    else if (viewModel.error != null)
-                      _buildErrorWidget(viewModel.error!)
-                    else if (viewModel.analysisResult != null)
-                      _buildAnalysisResults(viewModel.analysisResult!),
-                  ],
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _buildImagePickerSection(context, ref, analysisState),
+            const SizedBox(height: 24),
+            if (analysisState.selectedImage != null) _buildAnalyzeButton(ref),
+            const SizedBox(height: 24),
+            if (analysisState.isLoading)
+              Center(
+                child: CircularProgressIndicator(
+                  color: colorss.primaryColor,
                 ),
               ),
-            ),
-          );
-        },
+            if (analysisState.error != null)
+              _buildErrorWidget(analysisState.error!),
+            if (analysisState.analysisResult != null)
+              _buildAnalysisResultSection(analysisState),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildImageSection(BuildContext context, AnalysisViewModel viewModel) {
-    return Card(
-      color: Colors.grey[900],
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            const Text(
-              'Analiz edilecek grafiği seçin',
-              style: TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 16),
-            Row(
+  Widget _buildImagePickerSection(
+      BuildContext context, WidgetRef ref, AnalysisState analysisState) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            colorss.primaryColor.withOpacity(0.1),
+            Colors.transparent,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: colorss.primaryColor.withOpacity(0.2),
+          width: 1,
+        ),
+      ),
+      child: Column(
+        children: [
+          analysisState.selectedImage == null
+              ? Image.asset(
+                  'assets/images/chart_placeholder.png', // Placeholder görsel ekleyin
+                  height: 250,
+                  fit: BoxFit.cover,
+                )
+              : Image.file(
+                  analysisState.selectedImage!,
+                  height: 250,
+                  fit: BoxFit.cover,
+                ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                _buildImageButton(
-                  context,
-                  'Kamera',
-                  Icons.camera_alt,
-                  () => _pickImage(context, ImageSource.camera),
+                ElevatedButton.icon(
+                  onPressed: () => _pickImage(context, ref, ImageSource.camera),
+                  icon: const Icon(Icons.camera_alt),
+                  label: const Text('Kamera'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: colorss.primaryColor,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
-                _buildImageButton(
-                  context,
-                  'Galeri',
-                  Icons.photo_library,
-                  () => _pickImage(context, ImageSource.gallery),
+                ElevatedButton.icon(
+                  onPressed: () =>
+                      _pickImage(context, ref, ImageSource.gallery),
+                  icon: const Icon(Icons.photo_library),
+                  label: const Text('Galeri'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: colorss.primaryColor,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ],
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSelectedImage(File image) {
-    return Card(
-      color: Colors.grey[900],
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Seçilen Grafik',
-              style: TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 12),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.file(
-                image,
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildImageButton(
-    BuildContext context,
-    String label,
-    IconData icon,
-    VoidCallback onTap,
-  ) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.amber,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, size: 32, color: Colors.black),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: const TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAnalysisResults(AnalysisResult result) {
-    return Card(
-      color: Colors.grey[900],
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Analiz Sonuçları',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            _buildResultRow('Alış Olasılığı:',
-                '${result.buyProbability.toStringAsFixed(1)}%'),
-            _buildResultRow('Satış Olasılığı:',
-                '${result.sellProbability.toStringAsFixed(1)}%'),
-            _buildResultRow('Long Olasılığı:',
-                '${result.longProbability.toStringAsFixed(1)}%'),
-            _buildResultRow('Short Olasılığı:',
-                '${result.shortProbability.toStringAsFixed(1)}%'),
-            const Divider(color: Colors.grey),
-            _buildRecommendationCard(
-                result.recommendation, result.confidenceLevel),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRecommendationCard(
-      String recommendation, String confidenceLevel) {
-    Color cardColor;
-
-    if (recommendation.contains('AL') || recommendation.contains('LONG')) {
-      cardColor = Colors.green[900]!;
-    } else if (recommendation.contains('SAT') ||
-        recommendation.contains('SHORT')) {
-      cardColor = Colors.red[900]!;
-    } else {
-      cardColor = Colors.amber[900]!;
-    }
-
-    return Card(
-      color: cardColor,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text(
-              recommendation,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Güven Seviyesi: $confidenceLevel',
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildResultRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: const TextStyle(fontSize: 16)),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.amber,
-            ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildAnalyzeButton(WidgetRef ref) {
+    return ElevatedButton(
+      onPressed: () => ref.read(analysisProvider.notifier).analyzeImage(),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: colorss.primaryColor,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      child: const Text(
+        'Analizi Başlat',
+        style: TextStyle(fontSize: 18),
       ),
     );
   }
 
   Widget _buildErrorWidget(String error) {
-    return Card(
-      color: Colors.red[900],
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.red.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        'Hata: $error',
+        style: TextStyle(color: Colors.red, fontSize: 16),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  Widget _buildAnalysisResultSection(AnalysisState analysisState) {
+    final result = analysisState.analysisResult!;
+
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            colorss.backgroundColorLight.withOpacity(0.1),
+            colorss.backgroundColorLight.withOpacity(0.05),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: colorss.textColorSecondary.withOpacity(0.1),
+        ),
+      ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Text(
-          error,
-          style: const TextStyle(color: Colors.white),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Analiz Sonuçları',
+              style: TextStyle(
+                color: colorss.textColor,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            _buildProbabilityRow('AL', result.buyProbability, Colors.green),
+            _buildProbabilityRow('SAT', result.sellProbability, Colors.red),
+            _buildProbabilityRow('LONG', result.longProbability, Colors.blue),
+            _buildProbabilityRow(
+                'SHORT', result.shortProbability, Colors.orange),
+            const SizedBox(height: 16),
+            _buildInfoRow('Tavsiye', result.recommendation),
+            _buildInfoRow('Güven Seviyesi', result.confidenceLevel),
+          ],
         ),
       ),
     );
   }
 
-  Future<void> _pickImage(BuildContext context, ImageSource source) async {
-    final picker = ImagePicker();
-    try {
-      final XFile? image = await picker.pickImage(source: source);
-      if (image != null) {
-        final viewModel = context.read<AnalysisViewModel>();
-        await viewModel.analyzeImage(File(image.path));
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Resim seçilirken bir hata oluştu: $e')),
-      );
-    }
+  Widget _buildProbabilityRow(String label, double probability, Color color) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Container(
+            width: 60,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text(
+              label,
+              style: TextStyle(
+                color: color,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: LinearProgressIndicator(
+              value: probability / 100,
+              backgroundColor: color.withOpacity(0.2),
+              valueColor: AlwaysStoppedAnimation<Color>(color),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Text(
+            '${probability.toStringAsFixed(1)}%',
+            style: TextStyle(
+              color: colorss.textColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              color: colorss.textColorSecondary,
+              fontSize: 16,
+            ),
+          ),
+          Text(
+            value,
+            style: TextStyle(
+              color: colorss.textColor,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
