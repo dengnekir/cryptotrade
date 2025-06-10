@@ -7,15 +7,15 @@ class TermsOfServiceView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: colorss.backgroundColor,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Kullanım Koşulları',
-            style: TextStyle(color: colorss.textColor)),
+            style: TextStyle(color: Colors.black)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: colorss.textColor),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -28,7 +28,7 @@ class TermsOfServiceView extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    colorss.primaryColor.withOpacity(0.1),
+                    Colors.orange.withOpacity(0.1),
                     Colors.transparent,
                   ],
                   begin: Alignment.topLeft,
@@ -36,7 +36,7 @@ class TermsOfServiceView extends StatelessWidget {
                 ),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: colorss.primaryColor.withOpacity(0.2),
+                  color: Colors.orange.withOpacity(0.2),
                   width: 1,
                 ),
               ),
@@ -45,9 +45,9 @@ class TermsOfServiceView extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.gavel_outlined,
-                        color: colorss.primaryColor,
+                        color: Colors.orange,
                         size: 32,
                       ),
                       const SizedBox(width: 12),
@@ -56,7 +56,7 @@ class TermsOfServiceView extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: colorss.textColor,
+                          color: Colors.black,
                         ),
                       ),
                     ],
@@ -111,7 +111,7 @@ class TermsOfServiceView extends StatelessWidget {
               child: Text(
                 'Son Güncelleme: Mart 2024',
                 style: TextStyle(
-                  color: colorss.textColorSecondary,
+                  color: Colors.grey[700],
                   fontSize: 14,
                 ),
               ),
@@ -128,10 +128,10 @@ class TermsOfServiceView extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: colorss.primaryColor,
+            color: Colors.orange,
           ),
         ),
         const SizedBox(height: 8),
@@ -139,7 +139,7 @@ class TermsOfServiceView extends StatelessWidget {
           content,
           style: TextStyle(
             fontSize: 16,
-            color: colorss.textColorSecondary,
+            color: Colors.black87,
             height: 1.5,
           ),
         ),

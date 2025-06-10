@@ -39,16 +39,16 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.white,
         elevation: 0,
         title: Text(
           widget.initialEmail != null ? 'Şifre Sıfırlama' : 'Şifremi Unuttum',
-          style: const TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.black),
         ),
         leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeft, color: Colors.white),
+          icon: const FaIcon(FontAwesomeIcons.arrowLeft, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -64,31 +64,31 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                     ? 'Şifrenizi sıfırlamak için e-posta adresinize bir bağlantı göndereceğiz.'
                     : 'Şifrenizi sıfırlamak için kayıtlı e-posta adresinizi girin.',
                 style: const TextStyle(
-                  color: Colors.white70,
+                  color: Colors.black87,
                   fontSize: 16,
                 ),
               ),
               const SizedBox(height: 24),
               TextFormField(
                 controller: _emailController,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black),
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   labelText: 'E-posta',
-                  labelStyle: TextStyle(color: Colors.grey[400]),
+                  labelStyle: TextStyle(color: Colors.grey[700]),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey[800]!),
+                    borderSide: BorderSide(color: Colors.grey[300]!),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.amber),
+                    borderSide: const BorderSide(color: Colors.orange),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   filled: true,
-                  fillColor: Colors.grey[900]?.withOpacity(0.5),
+                  fillColor: Colors.grey[100],
                   prefixIcon: const Icon(
                     Icons.email_outlined,
-                    color: Colors.amber,
+                    color: Colors.orange,
                   ),
                 ),
                 validator: (value) {
@@ -104,7 +104,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               const SizedBox(height: 24),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.amber,
+                  backgroundColor: Colors.orange,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -168,7 +168,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                         height: 20,
                         width: 20,
                         child: CircularProgressIndicator(
-                          color: Colors.black,
+                          color: Colors.white,
                           strokeWidth: 2,
                         ),
                       )
@@ -177,7 +177,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: Colors.white,
                         ),
                       ),
               ),

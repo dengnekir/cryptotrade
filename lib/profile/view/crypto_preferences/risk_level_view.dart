@@ -17,35 +17,61 @@ class _RiskLevelViewState extends State<RiskLevelView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: colorss.backgroundColor,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: colorss.backgroundColor,
+        backgroundColor: Colors.white,
         elevation: 0,
-        title: Text(
+        title: const Text(
           'Risk Seviyesi',
-          style: TextStyle(color: colorss.textColor),
+          style: TextStyle(color: Colors.black),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: colorss.textColor),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            _buildHeader(),
-            const SizedBox(height: 24),
-            _buildRiskLevelSection(),
-            const SizedBox(height: 24),
-            _buildStopLossSection(),
-            const SizedBox(height: 24),
-            _buildTakeProfitSection(),
-            const SizedBox(height: 24),
-            _buildMaxInvestmentSection(),
-            const SizedBox(height: 32),
-            _buildSaveButton(),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.orange.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: const [
+                  Icon(
+                    Icons.construction,
+                    color: Colors.orange,
+                    size: 64,
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    'Şu Anda Geliştiriliyor',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 12),
+                  Text(
+                    'Bu özellik yakında kullanıma sunulacaktır. Şu anda geliştirme aşamasındadır.',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

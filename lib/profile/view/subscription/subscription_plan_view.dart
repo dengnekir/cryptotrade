@@ -7,16 +7,16 @@ class SubscriptionPlanView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: colorss.backgroundColor,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: colorss.backgroundColor,
+        backgroundColor: Colors.white,
         elevation: 0,
-        title: Text(
+        title: const Text(
           'Abonelik Planları',
-          style: TextStyle(color: colorss.textColor),
+          style: TextStyle(color: Colors.black),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: colorss.textColor),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -93,7 +93,7 @@ class SubscriptionPlanView extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            colorss.primaryColor.withOpacity(0.1),
+            Colors.orange.withOpacity(0.1),
             Colors.transparent,
           ],
           begin: Alignment.topLeft,
@@ -101,7 +101,7 @@ class SubscriptionPlanView extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: colorss.primaryColor.withOpacity(0.2),
+          color: Colors.orange.withOpacity(0.2),
           width: 1,
         ),
       ),
@@ -110,9 +110,9 @@ class SubscriptionPlanView extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.card_membership,
-                color: colorss.primaryColor,
+                color: Colors.orange,
                 size: 32,
               ),
               const SizedBox(width: 12),
@@ -121,7 +121,7 @@ class SubscriptionPlanView extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: colorss.textColor,
+                  color: Colors.black,
                 ),
               ),
             ],
@@ -131,7 +131,7 @@ class SubscriptionPlanView extends StatelessWidget {
             'Yapay zeka destekli kripto analiz sistemimizden maksimum fayda sağlamak için size en uygun planı seçin.',
             style: TextStyle(
               fontSize: 16,
-              color: colorss.textColorSecondary,
+              color: Colors.black87,
               height: 1.5,
             ),
           ),
@@ -153,8 +153,8 @@ class SubscriptionPlanView extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             isPopular
-                ? colorss.primaryColor.withOpacity(0.15)
-                : colorss.backgroundColorLight.withOpacity(0.1),
+                ? Colors.orange.withOpacity(0.15)
+                : Colors.grey.withOpacity(0.1),
             Colors.transparent,
           ],
           begin: Alignment.topLeft,
@@ -162,9 +162,7 @@ class SubscriptionPlanView extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isPopular
-              ? colorss.primaryColor
-              : colorss.textColorSecondary.withOpacity(0.2),
+          color: isPopular ? Colors.orange : Colors.grey.withOpacity(0.2),
           width: isPopular ? 2 : 1,
         ),
       ),
@@ -178,13 +176,13 @@ class SubscriptionPlanView extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: colorss.primaryColor,
+                  color: Colors.orange,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: const Text(
                   'En Popüler',
                   style: TextStyle(
-                    color: Colors.black,
+                    color: Colors.white,
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
@@ -222,7 +220,7 @@ class SubscriptionPlanView extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: colorss.textColor,
+                    color: Colors.black,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -234,9 +232,7 @@ class SubscriptionPlanView extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
-                        color: isPopular
-                            ? colorss.primaryColor
-                            : colorss.textColor,
+                        color: isPopular ? Colors.orange : Colors.black,
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -246,64 +242,39 @@ class SubscriptionPlanView extends StatelessWidget {
                         '/ $duration',
                         style: TextStyle(
                           fontSize: 16,
-                          color: colorss.textColorSecondary,
+                          color: Colors.black87,
                         ),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
-                ...features.map((feature) => Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.check_circle,
-                            color: isPopular
-                                ? colorss.primaryColor
-                                : colorss.textColorSecondary,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              feature,
-                              style: TextStyle(
-                                color: colorss.textColor,
-                                fontSize: 15,
+                const SizedBox(height: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: features
+                      .map(
+                        (feature) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.check_circle,
+                                color: isPopular ? Colors.orange : Colors.green,
+                                size: 18,
                               ),
-                            ),
+                              const SizedBox(width: 8),
+                              Text(
+                                feature,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    )),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // TODO: Implement subscription
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isPopular
-                          ? colorss.primaryColor
-                          : colorss.backgroundColorLight,
-                      foregroundColor:
-                          isPopular ? Colors.black : colorss.textColor,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 0,
-                    ),
-                    child: Text(
-                      'Planı Seç',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                        ),
+                      )
+                      .toList(),
                 ),
               ],
             ),

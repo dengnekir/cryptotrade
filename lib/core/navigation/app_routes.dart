@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import '../../profile/view/legal/view/privacy_policy_view.dart';
 import '../../profile/view/legal/view/terms_of_service_view.dart';
 import '../../profile/view/support/view/faq_view.dart';
-import '../../profile/view/support/view/feedback_view.dart';
-import '../../profile/view/support/view/live_support_view.dart';
 import '../../profile/view/support/view/support_view.dart';
 import '../../analysis/view/analysis_view.dart';
 
@@ -22,8 +20,6 @@ class AppRoutes {
     termsOfService: (context) => const TermsOfServiceView(),
     support: (context) => const SupportView(),
     faq: (context) => const FAQView(),
-    feedback: (context) => const FeedbackView(),
-    liveSupport: (context) => const LiveSupportView(),
     analysis: (context) => const AnalysisView(),
   };
 }

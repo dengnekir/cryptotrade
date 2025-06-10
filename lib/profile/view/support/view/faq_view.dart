@@ -7,15 +7,15 @@ class FAQView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: colorss.backgroundColor,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Sık Sorulan Sorular',
-            style: TextStyle(color: colorss.textColor)),
+            style: TextStyle(color: Colors.black)),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: colorss.textColor),
+          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         elevation: 0,
       ),
       body: ListView(
@@ -26,7 +26,7 @@ class FAQView extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  colorss.primaryColor.withOpacity(0.1),
+                  Colors.orange.withOpacity(0.1),
                   Colors.transparent,
                 ],
                 begin: Alignment.topLeft,
@@ -34,7 +34,7 @@ class FAQView extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: colorss.primaryColor.withOpacity(0.2),
+                color: Colors.orange.withOpacity(0.2),
                 width: 1,
               ),
             ),
@@ -43,9 +43,9 @@ class FAQView extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.help_outline,
-                      color: colorss.primaryColor,
+                      color: Colors.orange,
                       size: 32,
                     ),
                     const SizedBox(width: 12),
@@ -54,7 +54,7 @@ class FAQView extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: colorss.textColor,
+                        color: Colors.black,
                       ),
                     ),
                   ],
@@ -112,20 +112,20 @@ class FAQView extends StatelessWidget {
         title: Text(
           question,
           style: TextStyle(
-            color: colorss.textColor,
+            color: Colors.black87,
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
         ),
-        iconColor: colorss.primaryColor,
-        collapsedIconColor: colorss.primaryColor.withOpacity(0.7),
+        iconColor: Colors.orange,
+        collapsedIconColor: Colors.orange.withOpacity(0.7),
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: Text(
               answer,
               style: TextStyle(
-                color: colorss.textColorSecondary,
+                color: Colors.black87,
                 fontSize: 15,
                 height: 1.5,
               ),

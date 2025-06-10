@@ -63,21 +63,21 @@ class _ProfileEditViewState extends State<ProfileEditView> {
     final screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.white,
         elevation: 0,
         title: const Text(
           'Profili Düzenle',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.black),
         ),
         leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeft, color: Colors.white),
+          icon: const FaIcon(FontAwesomeIcons.arrowLeft, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: viewModel.isLoading
-          ? const Center(child: CircularProgressIndicator(color: Colors.amber))
+          ? const Center(child: CircularProgressIndicator(color: Colors.orange))
           : SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -95,9 +95,9 @@ class _ProfileEditViewState extends State<ProfileEditView> {
                             height: screenSize.width * 0.35,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Colors.grey[900],
+                              color: Colors.grey[200],
                               border: Border.all(
-                                color: Colors.amber.withOpacity(0.5),
+                                color: Colors.orange.withOpacity(0.5),
                                 width: 2,
                               ),
                             ),
@@ -117,7 +117,7 @@ class _ProfileEditViewState extends State<ProfileEditView> {
                                               return child;
                                             return const Center(
                                               child: CircularProgressIndicator(
-                                                color: Colors.amber,
+                                                color: Colors.orange,
                                               ),
                                             );
                                           },
@@ -125,14 +125,14 @@ class _ProfileEditViewState extends State<ProfileEditView> {
                                               (context, error, stackTrace) {
                                             return const Icon(
                                               Icons.person,
-                                              color: Colors.white54,
+                                              color: Colors.black54,
                                               size: 50,
                                             );
                                           },
                                         )
                                       : const Icon(
                                           Icons.person,
-                                          color: Colors.white54,
+                                          color: Colors.black54,
                                           size: 50,
                                         ),
                             ),
@@ -145,7 +145,7 @@ class _ProfileEditViewState extends State<ProfileEditView> {
                               child: Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: Colors.amber,
+                                  color: Colors.orange,
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
@@ -157,7 +157,7 @@ class _ProfileEditViewState extends State<ProfileEditView> {
                                 ),
                                 child: const Icon(
                                   Icons.camera_alt,
-                                  color: Colors.black,
+                                  color: Colors.white,
                                   size: 20,
                                 ),
                               ),
@@ -171,10 +171,10 @@ class _ProfileEditViewState extends State<ProfileEditView> {
                       Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: Colors.grey[900]?.withOpacity(0.5),
+                          color: Colors.grey[100],
                           borderRadius: BorderRadius.circular(16),
                           border: Border.all(
-                            color: Colors.grey[800]!,
+                            color: Colors.grey[300]!,
                             width: 1,
                           ),
                         ),
@@ -184,7 +184,7 @@ class _ProfileEditViewState extends State<ProfileEditView> {
                             const Text(
                               'Kişisel Bilgiler',
                               style: TextStyle(
-                                color: Colors.amber,
+                                color: Colors.orange,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -192,164 +192,122 @@ class _ProfileEditViewState extends State<ProfileEditView> {
                             const SizedBox(height: 20),
                             TextFormField(
                               controller: _nameController,
-                              style: const TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.black),
                               decoration: InputDecoration(
                                 labelText: 'Ad',
-                                labelStyle: TextStyle(color: Colors.grey[400]),
+                                labelStyle: TextStyle(color: Colors.grey[700]),
                                 enabledBorder: OutlineInputBorder(
                                   borderSide:
-                                      BorderSide(color: Colors.grey[800]!),
+                                      BorderSide(color: Colors.grey[300]!),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide:
-                                      const BorderSide(color: Colors.amber),
+                                      const BorderSide(color: Colors.orange),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                filled: true,
-                                fillColor: Colors.grey[900]?.withOpacity(0.5),
-                                prefixIcon: const Icon(
-                                  Icons.person_outline,
-                                  color: Colors.amber,
-                                ),
-                                hintText: viewModel.userModel?.name ?? '',
                               ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Ad gerekli';
+                                }
+                                return null;
+                              },
                             ),
                             const SizedBox(height: 16),
                             TextFormField(
                               controller: _surnameController,
-                              style: const TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.black),
                               decoration: InputDecoration(
                                 labelText: 'Soyad',
-                                labelStyle: TextStyle(color: Colors.grey[400]),
+                                labelStyle: TextStyle(color: Colors.grey[700]),
                                 enabledBorder: OutlineInputBorder(
                                   borderSide:
-                                      BorderSide(color: Colors.grey[800]!),
+                                      BorderSide(color: Colors.grey[300]!),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide:
-                                      const BorderSide(color: Colors.amber),
+                                      const BorderSide(color: Colors.orange),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                filled: true,
-                                fillColor: Colors.grey[900]?.withOpacity(0.5),
-                                prefixIcon: const Icon(
-                                  Icons.person_outline,
-                                  color: Colors.amber,
-                                ),
-                                hintText: viewModel.userModel?.surname ?? '',
                               ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Soyad gerekli';
+                                }
+                                return null;
+                              },
                             ),
                             const SizedBox(height: 16),
                             TextFormField(
                               controller: _phoneController,
-                              style: const TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.black),
                               keyboardType: TextInputType.phone,
                               decoration: InputDecoration(
                                 labelText: 'Telefon Numarası',
-                                labelStyle: TextStyle(color: Colors.grey[400]),
+                                labelStyle: TextStyle(color: Colors.grey[700]),
                                 enabledBorder: OutlineInputBorder(
                                   borderSide:
-                                      BorderSide(color: Colors.grey[800]!),
+                                      BorderSide(color: Colors.grey[300]!),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide:
-                                      const BorderSide(color: Colors.amber),
+                                      const BorderSide(color: Colors.orange),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                filled: true,
-                                fillColor: Colors.grey[900]?.withOpacity(0.5),
-                                prefixIcon: const Icon(
-                                  Icons.phone_outlined,
-                                  color: Colors.amber,
-                                ),
-                                hintText: viewModel.userModel?.phone ??
-                                    '+90 5XX XXX XX XX',
-                                hintStyle: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 14,
-                                ),
                               ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Telefon numarası gerekli';
+                                }
+                                return null;
+                              },
                             ),
                           ],
                         ),
                       ),
                       const SizedBox(height: 32),
-
-                      // Kaydet Butonu
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.amber,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            elevation: 2,
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.orange,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 16, horizontal: 32),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          onPressed: () async {
+                        ),
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
                             try {
-                              // Sadece değişiklik yapılan alanları gönder
-                              final name = _nameController.text.trim();
-                              final surname = _surnameController.text.trim();
-                              final phone = _phoneController.text.trim();
-
-                              final Map<String, String> updates = {};
-
-                              if (name.isNotEmpty &&
-                                  name != viewModel.userModel?.name) {
-                                updates['name'] = name;
-                              }
-                              if (surname.isNotEmpty &&
-                                  surname != viewModel.userModel?.surname) {
-                                updates['surname'] = surname;
-                              }
-                              if (phone.isNotEmpty &&
-                                  phone != viewModel.userModel?.phone) {
-                                updates['phone'] = phone;
-                              }
-
-                              print('Güncellenecek alanlar: $updates');
-
-                              await viewModel.updateUserProfile(
-                                name: updates['name'],
-                                surname: updates['surname'],
-                                phone: updates['phone'],
+                              await _viewModel.updateUserProfile(
+                                name: _nameController.text,
+                                surname: _surnameController.text,
+                                phone: _phoneController.text,
                                 profileImagePath: _selectedImagePath,
                               );
-
-                              print('Güncelleme başarılı');
-
                               if (mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content:
-                                        Text('Profil başarıyla güncellendi'),
-                                    backgroundColor: Colors.green,
-                                  ),
-                                );
                                 Navigator.pop(context);
                               }
                             } catch (e) {
-                              print('Güncelleme hatası: $e');
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Hata: $e'),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
+                              if (mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Hata: $e'),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                              }
                             }
-                          },
-                          child: const Text(
-                            'Değişiklikleri Kaydet',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
+                          }
+                        },
+                        child: const Text(
+                          'Güncelle',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
                         ),
                       ),

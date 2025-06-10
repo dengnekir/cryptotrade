@@ -28,16 +28,16 @@ class _AccountDeleteViewState extends State<AccountDeleteView> {
     final viewModel = context.watch<ProfileViewModel>();
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.white,
         elevation: 0,
         title: const Text(
           'Hesabı Sil',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.black),
         ),
         leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeft, color: Colors.white),
+          icon: const FaIcon(FontAwesomeIcons.arrowLeft, color: Colors.black),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -58,7 +58,7 @@ class _AccountDeleteViewState extends State<AccountDeleteView> {
                 const Text(
                   'Hesabınızı Silmek Üzeresiniz',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.black,
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
@@ -68,7 +68,7 @@ class _AccountDeleteViewState extends State<AccountDeleteView> {
                 const Text(
                   'Bu işlem geri alınamaz. Hesabınız ve tüm verileriniz kalıcı olarak silinecektir.',
                   style: TextStyle(
-                    color: Colors.white70,
+                    color: Colors.black87,
                     fontSize: 16,
                   ),
                   textAlign: TextAlign.center,
@@ -77,12 +77,12 @@ class _AccountDeleteViewState extends State<AccountDeleteView> {
                 TextFormField(
                   controller: _passwordController,
                   obscureText: !_showPassword,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.black),
                   decoration: InputDecoration(
                     labelText: 'Şifrenizi Girin',
-                    labelStyle: TextStyle(color: Colors.grey[400]),
+                    labelStyle: TextStyle(color: Colors.grey[700]),
                     enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey[800]!),
+                      borderSide: BorderSide(color: Colors.grey[300]!),
                     ),
                     focusedBorder: const OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.red),
@@ -90,7 +90,7 @@ class _AccountDeleteViewState extends State<AccountDeleteView> {
                     suffixIcon: IconButton(
                       icon: Icon(
                         _showPassword ? Icons.visibility_off : Icons.visibility,
-                        color: Colors.grey[400],
+                        color: Colors.grey[700],
                       ),
                       onPressed: () {
                         setState(() {
@@ -116,9 +116,9 @@ class _AccountDeleteViewState extends State<AccountDeleteView> {
                   },
                   title: const Text(
                     'Hesabımı kalıcı olarak silmek istediğimi onaylıyorum',
-                    style: TextStyle(color: Colors.white70),
+                    style: TextStyle(color: Colors.black87),
                   ),
-                  checkColor: Colors.black,
+                  checkColor: Colors.white,
                   activeColor: Colors.red,
                   side: const BorderSide(color: Colors.red),
                 ),
@@ -138,20 +138,21 @@ class _AccountDeleteViewState extends State<AccountDeleteView> {
                             final result = await showDialog<bool>(
                               context: context,
                               builder: (context) => AlertDialog(
-                                backgroundColor: Colors.grey[900],
+                                backgroundColor: Colors.white,
                                 title: const Text(
                                   'Son Onay',
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(color: Colors.black),
                                 ),
                                 content: const Text(
                                   'Hesabınız kalıcı olarak silinecek. Bu işlem geri alınamaz. Devam etmek istediğinize emin misiniz?',
-                                  style: TextStyle(color: Colors.white70),
+                                  style: TextStyle(color: Colors.black87),
                                 ),
                                 actions: [
                                   TextButton(
                                     onPressed: () =>
                                         Navigator.pop(context, false),
-                                    child: const Text('İptal'),
+                                    child: const Text('İptal',
+                                        style: TextStyle(color: Colors.black)),
                                   ),
                                   TextButton(
                                     onPressed: () =>
