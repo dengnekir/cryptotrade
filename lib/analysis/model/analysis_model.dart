@@ -5,6 +5,8 @@ class AnalysisResult {
   final double shortProbability;
   final String recommendation;
   final String confidenceLevel;
+  final String analysisDetails;
+  final String timestamp;
 
   AnalysisResult({
     required this.buyProbability,
@@ -13,6 +15,8 @@ class AnalysisResult {
     required this.shortProbability,
     required this.recommendation,
     required this.confidenceLevel,
+    this.analysisDetails = '',
+    this.timestamp = '',
   });
 
   factory AnalysisResult.empty() {
@@ -23,6 +27,8 @@ class AnalysisResult {
       shortProbability: 0,
       recommendation: '',
       confidenceLevel: '',
+      analysisDetails: '',
+      timestamp: '',
     );
   }
 }

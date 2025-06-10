@@ -1,5 +1,5 @@
 name: cryptotrade
-description: "A new Flutter project."
+description: A new Flutter project.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -30,13 +30,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_svg: ^2.0.7 # SVG görüntüleme için paket
+  flutter_riverpod: ^2.3.6
   firebase_core: ^2.24.2
   firebase_auth: ^4.15.3
   cloud_firestore: ^4.13.6
   firebase_storage: ^11.5.6
   firebase_app_check: ^0.2.1+8
   provider: ^6.1.5
-  image_picker: ^1.1.2
+  image_picker: ^1.0.4
   glassmorphism: ^3.0.0
   cupertino_icons: ^1.0.2
   shared_preferences: ^2.5.3
@@ -49,7 +51,6 @@ dependencies:
   android_intent_plus: ^5.3.0
   http: ^1.4.0
   riverpod: ^2.6.1
-  flutter_riverpod: ^2.6.1
 
 dev_dependencies:
   flutter_test:
@@ -67,14 +68,14 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  uses-material-design: true
+  assets:
+    - assets/icons/
+    - assets/images/
+
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
-  uses-material-design: true
-
-  # To add assets to your application, add an assets section, like this:
-  assets:
-    - assets/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

@@ -3,13 +3,18 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import '../../analysis/model/analysis_model.dart';
 import '../constants/api_constants.dart';
+import '../../core/providers/analysis_provider.dart';
 
 class GeminiAnalysisService {
-  Future<AnalysisResult> analyzeCoinImage(File imageFile) async {
+  Future<AnalysisResult> analyzeCoinImage(
+      File imageFile, AnalysisMode selectedMode) async {
     try {
       // Resmi base64'e çevir
       final bytes = await imageFile.readAsBytes();
       final base64Image = base64Encode(bytes);
+
+      // Seçilen moda göre özel prompt
+      String modeSpecificPrompt = _generateModeSpecificPrompt(selectedMode);
 
       // Gemini API isteği
       final response = await http.post(
@@ -25,10 +30,7 @@ class GeminiAnalysisService {
                 {
                   'inlineData': {'mimeType': 'image/jpeg', 'data': base64Image}
                 },
-                {
-                  'text':
-                      'Bu coin grafik görüntüsünü analiz et. Kesin olarak AL, SAT, LONG, SHORT için yüzdelik tahminler ver. Sadece kripto para grafikleri için analiz yap. Cevabı şu formatta ver: AL: X%, SAT: Y%, LONG: Z%, SHORT: W%'
-                }
+                {'text': modeSpecificPrompt}
               ]
             }
           ],
@@ -47,35 +49,25 @@ class GeminiAnalysisService {
         final responseText =
             data['candidates'][0]['content']['parts'][0]['text'];
 
+        print('Gemini Response Text: $responseText');
+
         // Yanıttan yüzdelikleri çıkar
-        final buyMatch = RegExp(r'AL:\s*(\d+)%').firstMatch(responseText);
-        final sellMatch = RegExp(r'SAT:\s*(\d+)%').firstMatch(responseText);
-        final longMatch = RegExp(r'LONG:\s*(\d+)%').firstMatch(responseText);
-        final shortMatch = RegExp(r'SHORT:\s*(\d+)%').firstMatch(responseText);
+        final probabilityMatch =
+            RegExp(r'(\w+):\s*(\d+)%').allMatches(responseText);
 
-        final buyProbability =
-            buyMatch != null ? double.parse(buyMatch.group(1)!) : 0.0;
-        final sellProbability =
-            sellMatch != null ? double.parse(sellMatch.group(1)!) : 0.0;
-        final longProbability =
-            longMatch != null ? double.parse(longMatch.group(1)!) : 0.0;
-        final shortProbability =
-            shortMatch != null ? double.parse(shortMatch.group(1)!) : 0.0;
+        if (probabilityMatch.isEmpty) {
+          throw Exception('Yapay zeka geçerli yüzde hesaplayamadı');
+        }
 
-        return AnalysisResult(
-          buyProbability: buyProbability,
-          sellProbability: sellProbability,
-          longProbability: longProbability,
-          shortProbability: shortProbability,
-          recommendation: _generateRecommendation(buyProbability,
-              sellProbability, longProbability, shortProbability),
-          confidenceLevel: _calculateConfidenceLevel(buyProbability,
-              sellProbability, longProbability, shortProbability),
-        );
+        // Yüzdeleri dinamik olarak al
+        Map<String, double> probabilities = {};
+        for (var match in probabilityMatch) {
+          probabilities[match.group(1)!] = double.parse(match.group(2)!);
+        }
+
+        // Seçilen moda göre sonuç oluştur
+        return _createAnalysisResult(selectedMode, probabilities, responseText);
       } else {
-        // Hata detaylarını yazdır
-        print('API Yanıt Kodu: ${response.statusCode}');
-        print('API Yanıt Gövdesi: ${response.body}');
         throw Exception('API yanıtı başarısız: ${response.statusCode}');
       }
     } catch (e) {
@@ -84,26 +76,153 @@ class GeminiAnalysisService {
     }
   }
 
-  String _generateRecommendation(
-      double buyProb, double sellProb, double longProb, double shortProb) {
-    List<MapEntry<String, double>> probabilities = [
-      MapEntry('AL', buyProb),
-      MapEntry('SAT', sellProb),
-      MapEntry('LONG', longProb),
-      MapEntry('SHORT', shortProb),
-    ];
+  // Seçilen moda göre özel prompt oluştur
+  String _generateModeSpecificPrompt(AnalysisMode mode) {
+    switch (mode) {
+      case AnalysisMode.buy:
+        return '''
+Bu kripto para grafik görüntüsünü profesyonel bir trader gibi analiz et. 
+AL için kesin ve net yüzde tahmini yap.
+Grafikteki alım sinyallerini detaylı incele.
 
-    probabilities.sort((a, b) => b.value.compareTo(a.value));
+Cevabı mutlaka şu formatta ver:
+AL: X%
+SAT: Y%
 
-    if (probabilities[0].value > 60) {
-      return '${probabilities[0].key} TAVSİYESİ';
+Yüzdelerin toplamı 100 olmak zorunda DEĞİL. 
+Gerçekçi ve net bir tahmin yap.
+
+Analiz detaylarını da açıkça belirt:
+* Fiyat Hareketi
+* RSI (Görelilik Güç Endeksi)
+* MACD (Hareketli Ortalama Yakınsama-Uzaklaşma)
+* Hareketli Ortalamalar (MA)
+* Destek-Direnç Seviyeleri
+''';
+      case AnalysisMode.sell:
+        return '''
+Bu kripto para grafik görüntüsünü profesyonel bir trader gibi analiz et. 
+SAT için kesin ve net yüzde tahmini yap.
+Grafikteki satım sinyallerini detaylı incele.
+
+Cevabı mutlaka şu formatta ver:
+AL: X%
+SAT: Y%
+
+Yüzdelerin toplamı 100 olmak zorunda DEĞİL. 
+Gerçekçi ve net bir tahmin yap.
+
+Analiz detaylarını da açıkça belirt:
+* Fiyat Hareketi
+* RSI (Görelilik Güç Endeksi)
+* MACD (Hareketli Ortalama Yakınsama-Uzaklaşma)
+* Hareketli Ortalamalar (MA)
+* Destek-Direnç Seviyeleri
+''';
+      case AnalysisMode.long:
+        return '''
+Bu kripto para grafik görüntüsünü profesyonel bir trader gibi analiz et. 
+LONG için kesin ve net yüzde tahmini yap.
+Grafikteki uzun pozisyon alma sinyallerini detaylı incele.
+
+Cevabı mutlaka şu formatta ver:
+LONG: X%
+SHORT: Y%
+
+Yüzdelerin toplamı 100 olmak zorunda DEĞİL. 
+Gerçekçi ve net bir tahmin yap.
+
+Analiz detaylarını da açıkça belirt:
+* Fiyat Hareketi
+* RSI (Görelilik Güç Endeksi)
+* MACD (Hareketli Ortalama Yakınsama-Uzaklaşma)
+* Hareketli Ortalamalar (MA)
+* Destek-Direnç Seviyeleri
+''';
+      case AnalysisMode.short:
+        return '''
+Bu kripto para grafik görüntüsünü profesyonel bir trader gibi analiz et. 
+SHORT için kesin ve net yüzde tahmini yap.
+Grafikteki kısa pozisyon alma sinyallerini detaylı incele.
+
+Cevabı mutlaka şu formatta ver:
+LONG: X%
+SHORT: Y%
+
+Yüzdelerin toplamı 100 olmak zorunda DEĞİL. 
+Gerçekçi ve net bir tahmin yap.
+
+Analiz detaylarını da açıkça belirt:
+* Fiyat Hareketi
+* RSI (Görelilik Güç Endeksi)
+* MACD (Hareketli Ortalama Yakınsama-Uzaklaşma)
+* Hareketli Ortalamalar (MA)
+* Destek-Direnç Seviyeleri
+''';
     }
-    return 'BEKLEYİNİZ';
+  }
+
+  // Seçilen moda göre analiz sonucu oluştur
+  AnalysisResult _createAnalysisResult(AnalysisMode mode,
+      Map<String, double> probabilities, String responseText) {
+    switch (mode) {
+      case AnalysisMode.buy:
+        return AnalysisResult(
+          buyProbability: probabilities['AL'] ?? 0.0,
+          sellProbability: probabilities['SAT'] ?? 0.0,
+          longProbability: 0.0,
+          shortProbability: 0.0,
+          recommendation:
+              probabilities['AL']! > probabilities['SAT']! ? 'AL' : 'SAT',
+          confidenceLevel: _calculateConfidenceLevel(probabilities['AL'] ?? 0.0,
+              probabilities['SAT'] ?? 0.0, 0.0, 0.0),
+          analysisDetails: responseText,
+        );
+      case AnalysisMode.sell:
+        return AnalysisResult(
+          buyProbability: probabilities['AL'] ?? 0.0,
+          sellProbability: probabilities['SAT'] ?? 0.0,
+          longProbability: 0.0,
+          shortProbability: 0.0,
+          recommendation:
+              probabilities['SAT']! > probabilities['AL']! ? 'SAT' : 'AL',
+          confidenceLevel: _calculateConfidenceLevel(probabilities['AL'] ?? 0.0,
+              probabilities['SAT'] ?? 0.0, 0.0, 0.0),
+          analysisDetails: responseText,
+        );
+      case AnalysisMode.long:
+        return AnalysisResult(
+          buyProbability: 0.0,
+          sellProbability: 0.0,
+          longProbability: probabilities['LONG'] ?? 0.0,
+          shortProbability: probabilities['SHORT'] ?? 0.0,
+          recommendation: probabilities['LONG']! > probabilities['SHORT']!
+              ? 'LONG'
+              : 'SHORT',
+          confidenceLevel: _calculateConfidenceLevel(0.0, 0.0,
+              probabilities['LONG'] ?? 0.0, probabilities['SHORT'] ?? 0.0),
+          analysisDetails: responseText,
+        );
+      case AnalysisMode.short:
+        return AnalysisResult(
+          buyProbability: 0.0,
+          sellProbability: 0.0,
+          longProbability: probabilities['LONG'] ?? 0.0,
+          shortProbability: probabilities['SHORT'] ?? 0.0,
+          recommendation: probabilities['SHORT']! > probabilities['LONG']!
+              ? 'SHORT'
+              : 'LONG',
+          confidenceLevel: _calculateConfidenceLevel(0.0, 0.0,
+              probabilities['LONG'] ?? 0.0, probabilities['SHORT'] ?? 0.0),
+          analysisDetails: responseText,
+        );
+    }
   }
 
   String _calculateConfidenceLevel(
       double buyProb, double sellProb, double longProb, double shortProb) {
-    double maxProb = [buyProb, sellProb, longProb, shortProb]
+    // Seçilen kategorinin maksimum olasılığına göre güven seviyesi
+    final maxProb = [buyProb, sellProb, longProb, shortProb]
         .reduce((max, value) => max > value ? max : value);
 
     if (maxProb > 80) return 'YÜKSEK';
