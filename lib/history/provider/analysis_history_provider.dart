@@ -84,6 +84,8 @@ class AnalysisHistoryNotifier extends StateNotifier<AnalysisHistoryState> {
           confidenceLevel: data['confidenceLevel']?.toString() ?? '',
           analysisDetails: data['analysisDetails']?.toString() ?? '',
           timestamp: formattedTimestamp, // Yeni eklenen timestamp
+          coinPair:
+              data['coinPair']?.toString() ?? 'ETH/USDT', // Coin çiftini ekle
         );
       }).toList();
 
@@ -165,13 +167,20 @@ class AnalysisHistoryNotifier extends StateNotifier<AnalysisHistoryState> {
     if (authState.currentUser == null) return;
 
     try {
+      // Debug için log ekle
+      print('Kaydedilen Analiz Bilgileri:');
+      print('Coin Çifti: $coinPair');
+      print('Recommendation: ${analysisResult.recommendation}');
+      print('Buy Probability: ${analysisResult.buyProbability}');
+      print('Sell Probability: ${analysisResult.sellProbability}');
+
       await _firestore
           .collection('analysis_history')
           .doc(authState.currentUser!.uid)
           .collection('analyses')
           .add({
         'timestamp': FieldValue.serverTimestamp(),
-        'coinPair': coinPair,
+        'coinPair': coinPair, // Doğrudan gelen coin çiftini kullan
         'buyProbability': analysisResult.buyProbability,
         'sellProbability': analysisResult.sellProbability,
         'longProbability': analysisResult.longProbability,
@@ -180,8 +189,114 @@ class AnalysisHistoryNotifier extends StateNotifier<AnalysisHistoryState> {
         'confidenceLevel': analysisResult.confidenceLevel,
         'analysisDetails': analysisResult.analysisDetails,
       });
+
+      print('Analiz geçmişine başarıyla kaydedildi: $coinPair');
     } catch (e) {
       print('Analiz geçmişine kaydetme hatası: $e');
+    }
+  }
+
+  Future<void> deleteAnalysisHistory() async {
+    final authState = ref.read(authStateProvider);
+
+    if (authState.currentUser == null) {
+      state =
+          state.copyWith(error: 'Lütfen önce giriş yapın', isLoading: false);
+      return;
+    }
+
+    state = state.copyWith(isLoading: true, error: null);
+
+    try {
+      // Kullanıcının tüm analiz geçmişini sil
+      final analysisCollection = _firestore
+          .collection('analysis_history')
+          .doc(authState.currentUser!.uid)
+          .collection('analyses');
+
+      // Tüm dökümanları toplu olarak sil
+      final snapshot = await analysisCollection.get();
+      for (var doc in snapshot.docs) {
+        await doc.reference.delete();
+      }
+
+      // State'i temizle
+      state = state.copyWith(analysisList: [], isLoading: false, error: null);
+
+      print('Tüm analiz geçmişi başarıyla silindi');
+    } catch (e) {
+      print('Analiz geçmişi silme hatası: $e');
+      state = state.copyWith(
+          isLoading: false, error: 'Analiz geçmişi silinemedi: $e');
+    }
+  }
+
+  // Analiz geçmişini silmek için metod
+  Future<void> clearAnalysisHistory() async {
+    await deleteAnalysisHistory();
+  }
+
+  Future<void> deleteSpecificAnalysis(AnalysisResult analysisToDelete) async {
+    final authState = ref.read(authStateProvider);
+
+    if (authState.currentUser == null) {
+      state =
+          state.copyWith(error: 'Lütfen önce giriş yapın', isLoading: false);
+      return;
+    }
+
+    state = state.copyWith(isLoading: true, error: null);
+
+    try {
+      // Firestore'da ilgili analizi bul ve sil
+      final analysisCollection = _firestore
+          .collection('analysis_history')
+          .doc(authState.currentUser!.uid)
+          .collection('analyses');
+
+      // Detaylı log ekle
+      print('Silme işlemi için parametreler:');
+      print('Coin Çifti: ${analysisToDelete.coinPair}');
+      print('Buy Probability: ${analysisToDelete.buyProbability}');
+      print('Sell Probability: ${analysisToDelete.sellProbability}');
+      print('Timestamp: ${analysisToDelete.timestamp}');
+
+      // Benzersiz bir kimlik oluştur
+      final uniqueKey = '${analysisToDelete.coinPair}_'
+          '${analysisToDelete.buyProbability}_'
+          '${analysisToDelete.sellProbability}_'
+          '${analysisToDelete.timestamp}';
+
+      // Tüm olası eşleşme kriterleri ile sorgulama
+      final querySnapshot = await analysisCollection
+          .where('coinPair', isEqualTo: analysisToDelete.coinPair)
+          .where('buyProbability', isEqualTo: analysisToDelete.buyProbability)
+          .where('sellProbability', isEqualTo: analysisToDelete.sellProbability)
+          .get();
+
+      print('Bulunan döküman sayısı: ${querySnapshot.docs.length}');
+
+      // Eşleşen dökümanları sil
+      for (var doc in querySnapshot.docs) {
+        await doc.reference.delete();
+        print('Döküman silindi: ${doc.id}');
+      }
+
+      // State'i güncelle (silinen öğe çıkarılır)
+      final updatedList = state.analysisList.where((analysis) {
+        final currentKey = '${analysis.coinPair}_'
+            '${analysis.buyProbability}_'
+            '${analysis.sellProbability}_'
+            '${analysis.timestamp}';
+        return currentKey != uniqueKey;
+      }).toList();
+
+      state = state.copyWith(analysisList: updatedList, isLoading: false);
+
+      print('Belirli analiz başarıyla silindi: ${analysisToDelete.coinPair}');
+    } catch (e) {
+      print('Belirli analiz silme hatası: $e');
+      state = state.copyWith(isLoading: false, error: 'Analiz silinemedi: $e');
     }
   }
 }

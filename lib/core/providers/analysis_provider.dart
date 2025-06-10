@@ -23,6 +23,7 @@ class AnalysisState {
   final bool isLoading;
   final String? error;
   final AnalysisMode selectedMode;
+  final String coinPair;
 
   AnalysisState({
     this.selectedImage,
@@ -30,6 +31,7 @@ class AnalysisState {
     this.isLoading = false,
     this.error,
     this.selectedMode = AnalysisMode.buy, // Varsayılan mod
+    this.coinPair = 'ETH/USDT', // Varsayılan coin çifti
   });
 
   AnalysisState copyWith({
@@ -38,6 +40,7 @@ class AnalysisState {
     bool? isLoading,
     String? error,
     AnalysisMode? selectedMode,
+    String? coinPair,
   }) {
     return AnalysisState(
       selectedImage: selectedImage ?? this.selectedImage,
@@ -45,6 +48,7 @@ class AnalysisState {
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
       selectedMode: selectedMode ?? this.selectedMode,
+      coinPair: coinPair ?? this.coinPair,
     );
   }
 }
@@ -61,6 +65,10 @@ class AnalysisNotifier extends StateNotifier<AnalysisState> {
 
   void selectMode(AnalysisMode mode) {
     state = state.copyWith(selectedMode: mode);
+  }
+
+  void setCoinPair(String newCoinPair) {
+    state = state.copyWith(coinPair: newCoinPair);
   }
 
   Future<void> analyzeImage() async {
@@ -81,6 +89,9 @@ class AnalysisNotifier extends StateNotifier<AnalysisState> {
       final result = await analysisService.analyzeCoinImage(
           state.selectedImage!, state.selectedMode);
 
+      // Coin çiftini güncelle
+      state = state.copyWith(coinPair: result.coinPair);
+
       // Analiz sonucunu geçmişe kaydet
       await preferencesService.saveAnalysisHistory(
           '${result.recommendation} - ${result.confidenceLevel}');
@@ -88,7 +99,7 @@ class AnalysisNotifier extends StateNotifier<AnalysisState> {
       // Firestore'a geçmiş analiz olarak kaydet
       if (authState.currentUser != null) {
         await analysisHistoryNotifier.saveAnalysisToHistory(
-            result, 'BTC/USDT' // TODO: Coin çiftini dinamik yap
+            result, state.coinPair // Dinamik coin çifti
             );
       }
 

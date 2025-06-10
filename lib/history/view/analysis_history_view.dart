@@ -36,6 +36,79 @@ class _AnalysisHistoryViewState extends ConsumerState<AnalysisHistoryView> {
           'Analiz Geçmişi',
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.delete_forever, color: Colors.red),
+            onPressed: () {
+              // Tüm geçmişi silme onayı için dialog
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    backgroundColor: Colors.white,
+                    title: Row(
+                      children: [
+                        Icon(Icons.warning_rounded,
+                            color: Colors.orange, size: 32),
+                        SizedBox(width: 12),
+                        Text(
+                          'Tüm Geçmişi Sil',
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    content: Text(
+                      'Tüm analiz geçmişini silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 16,
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          foregroundColor: Colors.grey,
+                        ),
+                        child: Text('İptal'),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text('Tümünü Sil'),
+                        onPressed: () {
+                          // Tüm geçmişi sil
+                          ref
+                              .read(analysisHistoryProvider.notifier)
+                              .clearAnalysisHistory();
+                          Navigator.of(context).pop();
+
+                          // Bilgilendirme
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Tüm analiz geçmişi silindi'),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: () async {
@@ -160,7 +233,7 @@ class _AnalysisHistoryViewState extends ConsumerState<AnalysisHistoryView> {
           Text(
             'Henüz bir analiz geçmişiniz yok',
             style: TextStyle(
-              color: colorss.textColor,
+              color: colorss.backgroundColor,
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
@@ -169,7 +242,7 @@ class _AnalysisHistoryViewState extends ConsumerState<AnalysisHistoryView> {
           Text(
             'İlk analizinizi yaparak geçmişinizi oluşturabilirsiniz',
             style: TextStyle(
-              color: colorss.textColorSecondary,
+              color: colorss.backgroundColor,
               fontSize: 14,
             ),
             textAlign: TextAlign.center,
@@ -197,6 +270,11 @@ class _AnalysisHistoryViewState extends ConsumerState<AnalysisHistoryView> {
       'SAT' || 'SHORT' => Colors.red,
       _ => Colors.grey,
     };
+
+    // Debug için log ekle
+    print('Görüntülenen Analiz Bilgileri:');
+    print('Coin Çifti: ${analysis.coinPair}');
+    print('Recommendation: ${analysis.recommendation}');
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -237,7 +315,8 @@ class _AnalysisHistoryViewState extends ConsumerState<AnalysisHistoryView> {
             ),
             const SizedBox(width: 8),
             Text(
-              'BTC/USDT', // TODO: Coin çiftini dinamik yap
+              // Coin çiftini doğrudan al
+              analysis.coinPair,
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
@@ -272,18 +351,6 @@ class _AnalysisHistoryViewState extends ConsumerState<AnalysisHistoryView> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Analiz Detayları:',
-                  style: TextStyle(
-                    color: Colors.black87,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                // Detaylı analiz metnini parse et ve göster
-                ..._parseAnalysisDetails(analysis.analysisDetails),
-                const SizedBox(height: 16),
                 // Olasılık çipleri
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -298,6 +365,19 @@ class _AnalysisHistoryViewState extends ConsumerState<AnalysisHistoryView> {
                         'SHORT', analysis.shortProbability, Colors.orange),
                   ],
                 ),
+                const SizedBox(height: 12),
+
+                Text(
+                  'Analiz Detayları:',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                // Detaylı analiz metnini parse et ve göster
+                ..._parseAnalysisDetails(analysis.analysisDetails),
               ],
             ),
           ),
@@ -334,15 +414,6 @@ class _AnalysisHistoryViewState extends ConsumerState<AnalysisHistoryView> {
                     color: Colors.black87,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  line.split(':** ').length > 1 ? line.split(':** ')[1] : '',
-                  style: TextStyle(
-                    color: Colors.black87,
-                    fontSize: 14,
-                    height: 1.5,
                   ),
                 ),
               ],

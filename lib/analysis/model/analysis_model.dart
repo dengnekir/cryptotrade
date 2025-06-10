@@ -7,6 +7,7 @@ class AnalysisResult {
   final String confidenceLevel;
   final String analysisDetails;
   final String timestamp;
+  final String coinPair;
 
   AnalysisResult({
     required this.buyProbability,
@@ -17,6 +18,7 @@ class AnalysisResult {
     required this.confidenceLevel,
     this.analysisDetails = '',
     this.timestamp = '',
+    this.coinPair = 'ETH/USDT',
   });
 
   factory AnalysisResult.empty() {
@@ -29,6 +31,35 @@ class AnalysisResult {
       confidenceLevel: '',
       analysisDetails: '',
       timestamp: '',
+      coinPair: 'ETH/USDT',
     );
+  }
+
+  factory AnalysisResult.fromJson(Map<String, dynamic> json) {
+    return AnalysisResult(
+      buyProbability: (json['buyProbability'] as num?)?.toDouble() ?? 0.0,
+      sellProbability: (json['sellProbability'] as num?)?.toDouble() ?? 0.0,
+      longProbability: (json['longProbability'] as num?)?.toDouble() ?? 0.0,
+      shortProbability: (json['shortProbability'] as num?)?.toDouble() ?? 0.0,
+      recommendation: json['recommendation']?.toString() ?? '',
+      confidenceLevel: json['confidenceLevel']?.toString() ?? '',
+      analysisDetails: json['analysisDetails']?.toString() ?? '',
+      timestamp: json['timestamp']?.toString() ?? '',
+      coinPair: json['coinPair']?.toString() ?? 'ETH/USDT',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'buyProbability': buyProbability,
+      'sellProbability': sellProbability,
+      'longProbability': longProbability,
+      'shortProbability': shortProbability,
+      'recommendation': recommendation,
+      'confidenceLevel': confidenceLevel,
+      'analysisDetails': analysisDetails,
+      'timestamp': timestamp,
+      'coinPair': coinPair,
+    };
   }
 }

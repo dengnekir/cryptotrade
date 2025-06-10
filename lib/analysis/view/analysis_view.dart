@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../core/providers/analysis_provider.dart';
 import '../../core/widgets/colors.dart';
 import '../../analysis/model/analysis_model.dart';
+import '../../history/provider/analysis_history_provider.dart';
 
 class AnalysisView extends ConsumerWidget {
   const AnalysisView({Key? key}) : super(key: key);
@@ -434,7 +435,7 @@ class AnalysisView extends ConsumerWidget {
           Text(
             '${probability.toStringAsFixed(1)}%',
             style: TextStyle(
-              color: colorss.textColor,
+              color: colorss.backgroundColor,
               fontWeight: FontWeight.bold,
             ),
           ),
