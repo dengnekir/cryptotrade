@@ -9,10 +9,18 @@ class FAQView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Sık Sorulan Sorular',
-            style: TextStyle(color: Colors.black)),
+        title: Text(
+          'Sık Sorulan Sorular',
+          style: TextStyle(
+            color: colorss.backgroundColorDark,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: colorss.backgroundColorDark,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         backgroundColor: Colors.white,
@@ -26,7 +34,7 @@ class FAQView extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Colors.orange.withOpacity(0.1),
+                  colorss.primaryColor.withOpacity(0.1),
                   Colors.transparent,
                 ],
                 begin: Alignment.topLeft,
@@ -34,7 +42,7 @@ class FAQView extends StatelessWidget {
               ),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
-                color: Colors.orange.withOpacity(0.2),
+                color: colorss.primaryColor.withOpacity(0.2),
                 width: 1,
               ),
             ),
@@ -43,9 +51,9 @@ class FAQView extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.help_outline,
-                      color: Colors.orange,
+                      color: colorss.primaryColor,
                       size: 32,
                     ),
                     const SizedBox(width: 12),
@@ -54,7 +62,7 @@ class FAQView extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        color: colorss.backgroundColorDark,
                       ),
                     ),
                   ],
@@ -90,7 +98,7 @@ class FAQView extends StatelessWidget {
                 ),
                 _buildFAQItem(
                   'Destek hizmetlerine nasıl ulaşabilirim?',
-                  'Canlı destek hattımıza 7/24 WhatsApp üzerinden ulaşabilirsiniz. Ayrıca e-posta ile de destek talebinde bulunabilirsiniz. Premium üyelerimiz için öncelikli destek hizmeti sunulmaktadır.',
+                  'Canlı destek hattımıza 7/24  ulaşabilirsiniz. Ayrıca e-posta ile de destek talebinde bulunabilirsiniz. Premium üyelerimiz için öncelikli destek hizmeti sunulmaktadır.',
                   context,
                 ),
               ],
@@ -112,20 +120,20 @@ class FAQView extends StatelessWidget {
         title: Text(
           question,
           style: TextStyle(
-            color: Colors.black87,
+            color: colorss.backgroundColorDark,
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
         ),
-        iconColor: Colors.orange,
-        collapsedIconColor: Colors.orange.withOpacity(0.7),
+        iconColor: colorss.primaryColor,
+        collapsedIconColor: colorss.primaryColor.withOpacity(0.7),
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: Text(
               answer,
               style: TextStyle(
-                color: Colors.black87,
+                color: colorss.backgroundColorDark,
                 fontSize: 15,
                 height: 1.5,
               ),

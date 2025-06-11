@@ -58,7 +58,7 @@ class _LoginViewContentState extends State<_LoginViewContent>
     final screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: colorss.backgroundColorLight,
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
           // Geliştirilmiş Arkaplan Gradyanı
@@ -73,8 +73,8 @@ class _LoginViewContentState extends State<_LoginViewContent>
                     colors: [
                       colorss
                           .getPrimaryGlowColor()
-                          .withOpacity(_fadeAnimation.value * 0.25),
-                      colorss.getSecondaryGlowColor(),
+                          .withOpacity(_fadeAnimation.value * 0.1),
+                      Colors.white,
                     ],
                     stops: [0.2, 0.8],
                   ),
@@ -135,8 +135,7 @@ class _LoginViewContentState extends State<_LoginViewContent>
                         Container(
                           padding: const EdgeInsets.all(20),
                           decoration: BoxDecoration(
-                            color:
-                                colorss.backgroundColorLight.withOpacity(0.3),
+                            color: Colors.white.withOpacity(0.5),
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                               color: colorss.primaryColor.withOpacity(0.2),
@@ -169,7 +168,7 @@ class _LoginViewContentState extends State<_LoginViewContent>
           // Yükleme göstergesi
           if (viewModel.isLoading)
             Container(
-              color: colorss.getOverlayColor(),
+              color: Colors.white.withOpacity(0.5),
               child: const Center(
                 child: CircularProgressIndicator(
                   valueColor:
@@ -191,13 +190,13 @@ class _LoginViewContentState extends State<_LoginViewContent>
             Text(
               'Crypto',
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black87,
                 fontSize: screenSize.width / 8,
                 fontWeight: FontWeight.normal,
                 letterSpacing: -2,
                 shadows: [
                   Shadow(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.black12,
                     blurRadius: 5,
                   ),
                 ],
@@ -212,7 +211,7 @@ class _LoginViewContentState extends State<_LoginViewContent>
                 letterSpacing: -2,
                 shadows: [
                   Shadow(
-                    color: colorss.primaryColor.withOpacity(0.9),
+                    color: colorss.primaryColor.withOpacity(0.5),
                     blurRadius: 5,
                   ),
                 ],
@@ -221,13 +220,13 @@ class _LoginViewContentState extends State<_LoginViewContent>
             Text(
               'Trade',
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black87,
                 fontSize: screenSize.width / 8,
                 fontWeight: FontWeight.normal,
                 letterSpacing: -2,
                 shadows: [
                   Shadow(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.black12,
                     blurRadius: 5,
                   ),
                 ],
@@ -241,7 +240,7 @@ class _LoginViewContentState extends State<_LoginViewContent>
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: colorss.primaryColor.withOpacity(0.3),
+                color: colorss.primaryColor.withOpacity(0.1),
                 blurRadius: 7,
                 spreadRadius: 1,
               ),
@@ -255,7 +254,7 @@ class _LoginViewContentState extends State<_LoginViewContent>
               fontWeight: FontWeight.w500,
               shadows: [
                 Shadow(
-                  color: colorss.primaryColor.withOpacity(0.9),
+                  color: colorss.primaryColor.withOpacity(0.3),
                   blurRadius: 1,
                 ),
               ],
@@ -271,13 +270,14 @@ class _LoginViewContentState extends State<_LoginViewContent>
       decoration: colorss.getInputDecoration(),
       child: TextFormField(
         controller: viewModel.emailController,
-        style: const TextStyle(color: colorss.textColor),
+        style: const TextStyle(color: Colors.black87),
         decoration: colorss
             .getTextFieldDecoration(
               labelText: 'E-posta',
               prefixIcon: Icons.email_outlined,
             )
             .copyWith(
+              labelStyle: const TextStyle(color: Colors.black54),
               errorStyle: const TextStyle(
                 color: colorss.primaryColorLight,
               ),
@@ -293,7 +293,7 @@ class _LoginViewContentState extends State<_LoginViewContent>
       child: TextFormField(
         controller: viewModel.passwordController,
         obscureText: !viewModel.isPasswordVisible,
-        style: const TextStyle(color: colorss.textColor),
+        style: const TextStyle(color: Colors.black87),
         decoration: colorss
             .getTextFieldDecoration(
               labelText: 'Şifre',
@@ -309,6 +309,7 @@ class _LoginViewContentState extends State<_LoginViewContent>
               ),
             )
             .copyWith(
+              labelStyle: const TextStyle(color: Colors.black54),
               errorStyle: const TextStyle(
                 color: colorss.primaryColorLight,
               ),
@@ -329,13 +330,13 @@ class _LoginViewContentState extends State<_LoginViewContent>
               if (states.contains(MaterialState.selected)) {
                 return colorss.primaryColor;
               }
-              return Colors.white;
+              return Colors.grey;
             },
           ),
         ),
         const Text(
           'Beni Hatırla',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Colors.black87),
         ),
       ],
     );
@@ -354,7 +355,7 @@ class _LoginViewContentState extends State<_LoginViewContent>
         child: const Text(
           'Şifremi Unuttum',
           style: TextStyle(
-            color: colorss.textColor,
+            color: colorss.backgroundColor,
             decoration: TextDecoration.underline,
           ),
         ),
@@ -415,7 +416,8 @@ class _LoginViewContentState extends State<_LoginViewContent>
       child: const Text(
         'Hesabın yok mu? Kayıt ol',
         style: TextStyle(
-          color: colorss.primaryColor,
+          color: colorss.backgroundColorDark,
+
           decoration: TextDecoration.underline,
         ),
       ),

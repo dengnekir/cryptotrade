@@ -9,10 +9,18 @@ class PrivacyPolicyView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Gizlilik Politikası',
-            style: TextStyle(color: Colors.black)),
+        title: Text(
+          'Gizlilik Politikası',
+          style: TextStyle(
+            color: colorss.backgroundColorDark,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: colorss.backgroundColorDark,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
         backgroundColor: Colors.white,
@@ -28,7 +36,7 @@ class PrivacyPolicyView extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.orange.withOpacity(0.1),
+                    colorss.primaryColor.withOpacity(0.1),
                     Colors.transparent,
                   ],
                   begin: Alignment.topLeft,
@@ -36,7 +44,7 @@ class PrivacyPolicyView extends StatelessWidget {
                 ),
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: Colors.orange.withOpacity(0.2),
+                  color: colorss.primaryColor.withOpacity(0.2),
                   width: 1,
                 ),
               ),
@@ -45,9 +53,9 @@ class PrivacyPolicyView extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.privacy_tip_outlined,
-                        color: Colors.orange,
+                        color: colorss.primaryColor,
                         size: 32,
                       ),
                       const SizedBox(width: 12),
@@ -56,7 +64,7 @@ class PrivacyPolicyView extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: colorss.backgroundColorDark,
                         ),
                       ),
                     ],
@@ -103,9 +111,9 @@ class PrivacyPolicyView extends StatelessWidget {
             const SizedBox(height: 20),
             Center(
               child: Text(
-                'Son Güncelleme: Mart 2024',
+                'Son Güncelleme: Haziran 2025',
                 style: TextStyle(
-                  color: Colors.grey[700],
+                  color: colorss.backgroundColorDark.withOpacity(0.7),
                   fontSize: 14,
                 ),
               ),
@@ -122,10 +130,10 @@ class PrivacyPolicyView extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Colors.orange,
+            color: colorss.primaryColor,
           ),
         ),
         const SizedBox(height: 8),
@@ -133,7 +141,7 @@ class PrivacyPolicyView extends StatelessWidget {
           content,
           style: TextStyle(
             fontSize: 16,
-            color: Colors.black87,
+            color: colorss.backgroundColorDark,
             height: 1.5,
           ),
         ),

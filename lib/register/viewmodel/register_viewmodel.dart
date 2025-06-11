@@ -5,11 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../core/services/cloudinary_service.dart';
 
 class RegisterViewModel extends ChangeNotifier {
   final ImagePicker _imagePicker = ImagePicker();
-  final CloudinaryService _cloudinaryService = CloudinaryService();
 
   bool _isLoading = false;
   String? _profileImagePath = null;
@@ -71,21 +69,9 @@ class RegisterViewModel extends ChangeNotifier {
     }
   }
 
-  // Profil resmi yükleme yardımcı metodu - Cloudinary kullanarak
+  // Profil resmi yükleme yardımcı metodu - Firebase Storage kullanarak
   Future<String?> _uploadProfileImage(String imagePath, String userId) async {
     try {
-      // Önce Cloudinary kullanarak yüklemeyi dene
-      print('Profil resmi Cloudinary\'ye yükleniyor...');
-      final cloudinaryUrl =
-          await _cloudinaryService.uploadProfileImage(imagePath, userId);
-
-      if (cloudinaryUrl != null) {
-        print('Cloudinary yükleme başarılı: $cloudinaryUrl');
-        return cloudinaryUrl;
-      }
-
-      // Cloudinary başarısız olursa Firebase Storage'a yedek olarak yükle
-      print('Cloudinary yükleme başarısız. Firebase Storage\'a yükleniyor...');
       final file = File(imagePath);
       if (await file.exists()) {
         final fileName = 'profile_${DateTime.now().millisecondsSinceEpoch}.jpg';

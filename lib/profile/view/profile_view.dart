@@ -4,11 +4,12 @@ import 'package:url_launcher/url_launcher.dart';
 import '../viewmodel/profile_viewmodel.dart';
 import '../../register/view/login_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'support/profile_edit_view.dart';
-import 'support/account_delete_view.dart';
+import 'legal/view/profile_edit_view.dart';
+import 'legal/view/account_delete_view.dart';
 import '../../register/view/forgot_password_view.dart';
 import '../../core/navigation/app_routes.dart';
-import 'subscription/subscription_plan_view.dart';
+import 'legal/view/subscription_plan_view.dart';
+import '../../core/widgets/colors.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({Key? key}) : super(key: key);
@@ -53,62 +54,12 @@ class _ProfileViewContentState extends State<_ProfileViewContent> {
         title: const Text(
           'Profil',
           style: TextStyle(
-            color: Colors.black,
+            color: colorss.backgroundColorDark,
             fontSize: 24,
             fontWeight: FontWeight.bold,
           ),
         ),
         automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            icon: const FaIcon(
-              FontAwesomeIcons.rightFromBracket,
-              color: Colors.black,
-              size: 20,
-            ),
-            onPressed: () async {
-              // Çıkış onayı dialog'u
-              final result = await showDialog<bool>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  backgroundColor: Colors.white,
-                  title: const Text(
-                    'Çıkış Yap',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  content: const Text(
-                    'Hesabınızdan çıkış yapmak istediğinize emin misiniz?',
-                    style: TextStyle(color: Colors.black87),
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, false),
-                      child: const Text('İptal',
-                          style: TextStyle(color: Colors.black)),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, true),
-                      child: const Text(
-                        'Çıkış Yap',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-
-              if (result == true && mounted) {
-                await viewModel.signOut();
-                if (mounted) {
-                  Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (_) => const LoginView()),
-                    (route) => false,
-                  );
-                }
-              }
-            },
-          ),
-        ],
       ),
       body: viewModel.isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -122,29 +73,57 @@ class _ProfileViewContentState extends State<_ProfileViewContent> {
                       // Profil Başlık Bölümü
                       Container(
                         padding: EdgeInsets.all(screenSize.width * 0.05),
+                        decoration: BoxDecoration(
+                          color: colorss.primaryColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        margin: const EdgeInsets.all(16),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  '${viewModel.userModel!.name} ${viewModel.userModel!.surname}',
-                                  style: const TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
+                            // Profil Fotoğrafı
+                            Container(
+                              width: 80,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: colorss.primaryColor,
+                                  width: 2,
                                 ),
-                                Text(
-                                  viewModel.userModel!.email,
-                                  style: TextStyle(
-                                    color: Colors.grey[700],
-                                    fontSize: 16,
+                                color: colorss.primaryColor.withOpacity(0.2),
+                              ),
+                              child: Icon(
+                                Icons.person,
+                                color: colorss.primaryColor,
+                                size: 50,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${viewModel.userModel!.name} ${viewModel.userModel!.surname}',
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: colorss.backgroundColorDark,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    viewModel.userModel!.email,
+                                    style: TextStyle(
+                                      color: colorss.backgroundColorDark
+                                          .withOpacity(0.7),
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -184,7 +163,6 @@ class _ProfileViewContentState extends State<_ProfileViewContent> {
                               }
                             },
                           ),
-
                           _buildMenuItem(
                             icon: Icons.delete_forever,
                             title: 'Hesap Silme',
@@ -218,8 +196,6 @@ class _ProfileViewContentState extends State<_ProfileViewContent> {
                           ),
                         ],
                       ),
-
-
 
                       _buildMenuSection(
                         'Destek ve Geri Bildirim',
@@ -256,7 +232,6 @@ class _ProfileViewContentState extends State<_ProfileViewContent> {
                               Navigator.pushNamed(context, AppRoutes.faq);
                             },
                           ),
-
                         ],
                       ),
 
@@ -281,6 +256,81 @@ class _ProfileViewContentState extends State<_ProfileViewContent> {
                           ),
                         ],
                       ),
+
+                      // Çıkış Yapma Butonu
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 20),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              // Çıkış onayı dialog'u
+                              final result = await showDialog<bool>(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  backgroundColor: Colors.white,
+                                  title: const Text(
+                                    'Çıkış Yap',
+                                    style: TextStyle(
+                                        color: colorss.backgroundColorDark),
+                                  ),
+                                  content: const Text(
+                                    'Hesabınızdan çıkış yapmak istediğinize emin misiniz?',
+                                    style: TextStyle(
+                                        color: colorss.backgroundColorDark),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, false),
+                                      child: Text('İptal',
+                                          style: TextStyle(
+                                              color:
+                                                  colorss.backgroundColorDark)),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, true),
+                                      child: Text(
+                                        'Çıkış Yap',
+                                        style: TextStyle(
+                                            color: colorss.primaryColor),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+
+                              if (result == true && mounted) {
+                                await viewModel.signOut();
+                                if (mounted) {
+                                  Navigator.of(context).pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (_) => const LoginView()),
+                                    (route) => false,
+                                  );
+                                }
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: colorss.primaryColor,
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: const Text(
+                              'Çıkış Yap',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -295,12 +345,15 @@ class _ProfileViewContentState extends State<_ProfileViewContent> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
+            color: colorss.backgroundColorDark.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
+        border: Border.all(
+          color: colorss.primaryColor.withOpacity(0.1),
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,9 +362,9 @@ class _ProfileViewContentState extends State<_ProfileViewContent> {
             padding: const EdgeInsets.all(16),
             child: Text(
               title,
-              style: const TextStyle(
-                color: Colors.black,
-                fontSize: 20,
+              style: TextStyle(
+                color: colorss.backgroundColorDark,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -329,23 +382,21 @@ class _ProfileViewContentState extends State<_ProfileViewContent> {
     bool isDestructive = false,
   }) {
     return ListTile(
-      onTap: onTap,
       leading: Icon(
         icon,
-        color: isDestructive ? Colors.red : Colors.black87,
-        size: 24,
+        color: isDestructive ? Colors.red : colorss.backgroundColorDark,
       ),
       title: Text(
         title,
         style: TextStyle(
-          color: isDestructive ? Colors.red : Colors.black87,
-          fontSize: 16,
+          color: isDestructive ? Colors.red : colorss.backgroundColorDark,
         ),
       ),
       trailing: Icon(
         Icons.chevron_right,
-        color: isDestructive ? Colors.red : Colors.grey,
+        color: colorss.backgroundColorDark.withOpacity(0.5),
       ),
+      onTap: onTap,
     );
   }
 

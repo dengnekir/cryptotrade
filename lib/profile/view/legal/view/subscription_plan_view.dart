@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../core/widgets/colors.dart';
+import '../../../../core/widgets/colors.dart';
 
 class SubscriptionPlanView extends StatelessWidget {
   const SubscriptionPlanView({Key? key}) : super(key: key);
@@ -11,12 +11,18 @@ class SubscriptionPlanView extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
+        title: Text(
           'Abonelik Planları',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(
+            color: colorss.backgroundColorDark,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: colorss.backgroundColorDark,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -93,7 +99,7 @@ class SubscriptionPlanView extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Colors.orange.withOpacity(0.1),
+            colorss.primaryColor.withOpacity(0.1),
             Colors.transparent,
           ],
           begin: Alignment.topLeft,
@@ -101,7 +107,7 @@ class SubscriptionPlanView extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Colors.orange.withOpacity(0.2),
+          color: colorss.primaryColor.withOpacity(0.2),
           width: 1,
         ),
       ),
@@ -110,9 +116,9 @@ class SubscriptionPlanView extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.card_membership,
-                color: Colors.orange,
+                color: colorss.primaryColor,
                 size: 32,
               ),
               const SizedBox(width: 12),
@@ -121,7 +127,7 @@ class SubscriptionPlanView extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: colorss.backgroundColorDark,
                 ),
               ),
             ],
@@ -131,7 +137,7 @@ class SubscriptionPlanView extends StatelessWidget {
             'Yapay zeka destekli kripto analiz sistemimizden maksimum fayda sağlamak için size en uygun planı seçin.',
             style: TextStyle(
               fontSize: 16,
-              color: Colors.black87,
+              color: colorss.backgroundColorDark,
               height: 1.5,
             ),
           ),
@@ -153,8 +159,8 @@ class SubscriptionPlanView extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             isPopular
-                ? Colors.orange.withOpacity(0.15)
-                : Colors.grey.withOpacity(0.1),
+                ? colorss.primaryColor.withOpacity(0.15)
+                : colorss.backgroundColorLight.withOpacity(0.1),
             Colors.transparent,
           ],
           begin: Alignment.topLeft,
@@ -162,7 +168,9 @@ class SubscriptionPlanView extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isPopular ? Colors.orange : Colors.grey.withOpacity(0.2),
+          color: isPopular
+              ? colorss.primaryColor
+              : colorss.backgroundColorLight.withOpacity(0.2),
           width: isPopular ? 2 : 1,
         ),
       ),
@@ -176,7 +184,7 @@ class SubscriptionPlanView extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.orange,
+                  color: colorss.primaryColor,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: const Text(
@@ -220,7 +228,7 @@ class SubscriptionPlanView extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: colorss.backgroundColorDark,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -232,7 +240,9 @@ class SubscriptionPlanView extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
-                        color: isPopular ? Colors.orange : Colors.black,
+                        color: isPopular
+                            ? colorss.primaryColor
+                            : colorss.backgroundColorDark,
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -242,7 +252,7 @@ class SubscriptionPlanView extends StatelessWidget {
                         '/ $duration',
                         style: TextStyle(
                           fontSize: 16,
-                          color: Colors.black87,
+                          color: colorss.backgroundColorDark,
                         ),
                       ),
                     ),
@@ -251,30 +261,58 @@ class SubscriptionPlanView extends StatelessWidget {
                 const SizedBox(height: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: features
-                      .map(
-                        (feature) => Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.check_circle,
-                                color: isPopular ? Colors.orange : Colors.green,
-                                size: 18,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                feature,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                            ],
+                  children: features.map((feature) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.check_circle,
+                            color: isPopular
+                                ? colorss.primaryColor
+                                : colorss.backgroundColorDark,
+                            size: 18,
                           ),
-                        ),
-                      )
-                      .toList(),
+                          const SizedBox(width: 8),
+                          Text(
+                            feature,
+                            style: TextStyle(
+                              color: colorss.backgroundColorDark,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Abonelik seçme işlemi
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: isPopular
+                          ? colorss.primaryColor
+                          : colorss.primaryColorDark,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      'Seç',
+                      style: TextStyle(
+                        color: isPopular
+                            ? Colors.white
+                            : colorss.backgroundColorDark,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),

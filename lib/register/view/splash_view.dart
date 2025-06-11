@@ -78,7 +78,7 @@ class _SplashViewContentState extends State<_SplashViewContent>
     final screenSize = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: colorss.backgroundColor,
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
           // Arkaplan animasyonu
@@ -93,8 +93,8 @@ class _SplashViewContentState extends State<_SplashViewContent>
                     colors: [
                       colorss
                           .getPrimaryGlowColor()
-                          .withOpacity(_glowAnimation.value * 0.3),
-                      colorss.getSecondaryGlowColor(),
+                          .withOpacity(_glowAnimation.value * 0.1),
+                      Colors.white,
                     ],
                     stops: [0.0, 0.7],
                   ),
@@ -118,13 +118,13 @@ class _SplashViewContentState extends State<_SplashViewContent>
                         Text(
                           'Crypto',
                           style: TextStyle(
-                            color: colorss.textColor,
+                            color: Colors.black87,
                             fontSize: screenSize.width / 8,
                             fontWeight: FontWeight.normal,
                             letterSpacing: -2,
                             shadows: [
                               Shadow(
-                                color: colorss.textColor.withOpacity(0.5),
+                                color: Colors.black12,
                                 blurRadius: 10,
                               ),
                             ],
@@ -139,7 +139,7 @@ class _SplashViewContentState extends State<_SplashViewContent>
                             letterSpacing: -2,
                             shadows: [
                               Shadow(
-                                color: colorss.primaryColor.withOpacity(0.95),
+                                color: colorss.primaryColor.withOpacity(0.5),
                                 blurRadius: 3,
                               ),
                             ],
@@ -148,13 +148,13 @@ class _SplashViewContentState extends State<_SplashViewContent>
                         Text(
                           'Trade',
                           style: TextStyle(
-                            color: colorss.textColor,
+                            color: Colors.black87,
                             fontSize: screenSize.width / 8,
                             fontWeight: FontWeight.normal,
                             letterSpacing: -2,
                             shadows: [
                               Shadow(
-                                color: colorss.textColor.withOpacity(0.5),
+                                color: Colors.black12,
                                 blurRadius: 10,
                               ),
                             ],
@@ -187,7 +187,7 @@ class _SplashViewContentState extends State<_SplashViewContent>
                         fontWeight: FontWeight.w500,
                         shadows: [
                           Shadow(
-                            color: colorss.primaryColor.withOpacity(0.9),
+                            color: colorss.primaryColor.withOpacity(0.3),
                             blurRadius: 3,
                           ),
                         ],

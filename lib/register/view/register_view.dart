@@ -69,7 +69,7 @@ class _RegisterViewContentState extends State<_RegisterViewContent>
     }
 
     return Scaffold(
-      backgroundColor: colorss.backgroundColorLight,
+      backgroundColor: Colors.white, // Light mode background
       body: Stack(
         children: [
           // Geliştirilmiş Arkaplan Gradyanı
@@ -84,8 +84,8 @@ class _RegisterViewContentState extends State<_RegisterViewContent>
                     colors: [
                       colorss
                           .getPrimaryGlowColor()
-                          .withOpacity(_fadeAnimation.value * 0.5),
-                      colorss.getSecondaryGlowColor(),
+                          .withOpacity(_fadeAnimation.value * 0.1),
+                      Colors.white, // Light mode gradient
                     ],
                     stops: [0.2, 0.8],
                   ),
@@ -152,7 +152,7 @@ class _RegisterViewContentState extends State<_RegisterViewContent>
                             Container(
                               width: screenSize.width * 0.3,
                               height: 2,
-                              color: colorss.primaryColor.withOpacity(0.3),
+                              color: colorss.primaryColorDark.withOpacity(0.3),
                             ),
                             _buildStepIndicator("Şifre\nOluştur",
                                 isActive: viewModel.currentStep == 1),
@@ -175,7 +175,7 @@ class _RegisterViewContentState extends State<_RegisterViewContent>
                           child: const Text(
                             'Hesabınız var mı? Giriş yap',
                             style: TextStyle(
-                              color: colorss.primaryColor,
+                              color: colorss.backgroundColorDark,
                               decoration: TextDecoration.underline,
                             ),
                           ),
@@ -190,7 +190,7 @@ class _RegisterViewContentState extends State<_RegisterViewContent>
 
           if (viewModel.isLoading)
             Container(
-              color: colorss.getOverlayColor(),
+              color: Colors.white.withOpacity(0.5),
               child: const Center(
                 child: CircularProgressIndicator(
                   valueColor:
@@ -212,13 +212,13 @@ class _RegisterViewContentState extends State<_RegisterViewContent>
             Text(
               'Crypto',
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black87,
                 fontSize: screenSize.width / 10,
                 fontWeight: FontWeight.normal,
                 letterSpacing: -2,
                 shadows: [
                   Shadow(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.black12,
                     blurRadius: 5,
                   ),
                 ],
@@ -242,13 +242,13 @@ class _RegisterViewContentState extends State<_RegisterViewContent>
             Text(
               'Trade',
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black87,
                 fontSize: screenSize.width / 10,
                 fontWeight: FontWeight.normal,
                 letterSpacing: -2,
                 shadows: [
                   Shadow(
-                    color: Colors.white.withOpacity(0.5),
+                    color: Colors.black12,
                     blurRadius: 5,
                   ),
                 ],
@@ -262,7 +262,7 @@ class _RegisterViewContentState extends State<_RegisterViewContent>
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: colorss.primaryColor.withOpacity(0.3),
+                color: colorss.primaryColor.withOpacity(0.1),
                 blurRadius: 7,
                 spreadRadius: 1,
               ),
@@ -276,7 +276,7 @@ class _RegisterViewContentState extends State<_RegisterViewContent>
               fontWeight: FontWeight.w500,
               shadows: [
                 Shadow(
-                  color: colorss.primaryColor.withOpacity(0.5),
+                  color: colorss.primaryColor.withOpacity(0.3),
                   blurRadius: 5,
                 ),
               ],
@@ -294,7 +294,7 @@ class _RegisterViewContentState extends State<_RegisterViewContent>
           title,
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: isActive ? colorss.primaryColor : Colors.white,
+            color: isActive ? colorss.primaryColorDark : colorss.backgroundColorLight,
             fontSize: 14,
           ),
         ),
@@ -319,7 +319,7 @@ class _RegisterViewContentState extends State<_RegisterViewContent>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: colorss.backgroundColorLight.withOpacity(0.3),
+        color: Colors.white.withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: colorss.primaryColor.withOpacity(0.2),
@@ -332,50 +332,38 @@ class _RegisterViewContentState extends State<_RegisterViewContent>
           const Text(
             'Kişisel Bilgiler',
             style: TextStyle(
-              color: colorss.primaryColor,
+              color: colorss.backgroundColorLight,
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
           const SizedBox(height: 20),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Column(
             children: [
-              Expanded(
-                flex: 3,
-                child: Column(
-                  children: [
-                    _buildInputField(
-                      controller: viewModel.nameController,
-                      label: 'Ad',
-                      icon: Icons.person_outline,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Ad boş olamaz';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 15),
-                    _buildInputField(
-                      controller: viewModel.surnameController,
-                      label: 'Soyad',
-                      icon: Icons.person_outline,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Soyad boş olamaz';
-                        }
-                        return null;
-                      },
-                    ),
-                  ],
-                ),
+              _buildInputField(
+                controller: viewModel.nameController,
+                label: 'Ad',
+                icon: Icons.person_outline,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Ad boş olamaz';
+                  }
+                  return null;
+                },
               ),
-              const SizedBox(width: 15),
-              Expanded(
-                flex: 2,
-                child: _buildProfileImagePicker(context, viewModel),
+              const SizedBox(height: 15),
+              _buildInputField(
+                controller: viewModel.surnameController,
+                label: 'Soyad',
+                icon: Icons.person_outline,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Soyad boş olamaz';
+                  }
+                  return null;
+                },
               ),
+
             ],
           ),
           const SizedBox(height: 15),
@@ -395,7 +383,6 @@ class _RegisterViewContentState extends State<_RegisterViewContent>
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: colorss.backgroundColorLight.withOpacity(0.3),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: colorss.primaryColor.withOpacity(0.2),
@@ -408,7 +395,7 @@ class _RegisterViewContentState extends State<_RegisterViewContent>
           const Text(
             'Şifre Oluştur',
             style: TextStyle(
-              color: colorss.primaryColor,
+              color: colorss.backgroundColorLight,
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
@@ -466,19 +453,19 @@ class _RegisterViewContentState extends State<_RegisterViewContent>
             controller: controller,
             obscureText: obscureTextValue,
             keyboardType: keyboardType,
-            style: const TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.black87),
             decoration: InputDecoration(
               labelText: label,
-              labelStyle: const TextStyle(color: Colors.white70),
+              labelStyle: const TextStyle(color: Colors.black54),
               prefixIcon:
-                  Icon(icon, color: colorss.primaryColor.withOpacity(0.7)),
+                  Icon(icon, color: colorss.backgroundColorDark.withOpacity(0.7)),
               suffixIcon: isPassword
                   ? IconButton(
                       icon: Icon(
                         obscureTextValue
                             ? Icons.visibility_off
                             : Icons.visibility,
-                        color: colorss.primaryColorLight,
+                        color: colorss.backgroundColorLight,
                       ),
                       onPressed: () {
                         _obscureText.value = !obscureTextValue;

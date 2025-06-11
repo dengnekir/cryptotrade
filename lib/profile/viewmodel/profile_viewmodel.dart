@@ -334,58 +334,48 @@ class ProfileViewModel extends ChangeNotifier {
   Future<void> deleteAccount({required String password}) async {
     setLoading(true);
     try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) throw Exception('Kullanıcı oturumu bulunamadı');
-
-      // Firestore'dan kullanıcı bilgilerini al
-      final userDoc = await _firestore.collection('users').doc(user.uid).get();
-      if (!userDoc.exists) throw Exception('Kullanıcı bilgileri bulunamadı');
-
-      final userData = userDoc.data();
-      if (userData == null || userData['password'] != password) {
-        throw Exception('Şifre yanlış');
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) {
+        throw 'Kullanıcı oturumu bulunamadı';
       }
 
-      // Kullanıcının tüm verilerini sil
-      await _firestore.collection('users').doc(user.uid).delete();
-      await _firestore
-          .collection('sessions')
-          .where('userId', isEqualTo: user.uid)
-          .get()
-          .then((snapshot) {
-        for (var doc in snapshot.docs) {
-          doc.reference.delete();
-        }
-      });
+      // Kullanıcının kimlik doğrulamasını yap
+      final credential = EmailAuthProvider.credential(
+        email: currentUser.email!,
+        password: password,
+      );
 
-      // Profil resmini sil
-      if (_userModel?.profileImage != null) {
-        try {
-          await _storage.refFromURL(_userModel!.profileImage!).delete();
-        } catch (e) {
-          print('Profil resmi silinirken hata: $e');
-        }
+      // Yeniden kimlik doğrulama
+      await currentUser.reauthenticateWithCredential(credential);
+
+      // Firestore'dan kullanıcı verilerini sil
+      await _firestore.collection('users').doc(currentUser.uid).delete();
+
+      // Firebase Storage'daki profil resmini sil
+      try {
+        final profileImageRef =
+            _storage.ref().child('profile_images/${currentUser.uid}');
+        await profileImageRef.delete();
+      } catch (e) {
+        print('Profil resmi silinemedi: $e');
       }
 
-      // Firebase Auth hesabını sil
-      await user.delete();
-      _userModel = null;
-      notifyListeners();
+      // Kullanıcı hesabını sil
+      await currentUser.delete();
+
+      // Oturumu kapat
+      await _authService.signOut();
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'requires-recent-login':
+          throw 'Bu işlem için lütfen tekrar giriş yapın';
+        case 'wrong-password':
+          throw 'Girilen şifre yanlış';
+        default:
+          throw 'Hesap silme işlemi başarısız: ${e.message}';
+      }
     } catch (e) {
-      print('Hesap silme hatası: $e');
-      if (e is FirebaseAuthException) {
-        switch (e.code) {
-          case 'requires-recent-login':
-            throw 'Güvenlik nedeniyle yeniden giriş yapmanız gerekiyor';
-          default:
-            throw 'Hesap silinirken bir hata oluştu: ${e.message}';
-        }
-      }
-      String errorMessage = e.toString();
-      if (errorMessage.contains('Şifre yanlış')) {
-        throw 'Şifre yanlış';
-      }
-      rethrow;
+      throw 'Hesap silme hatası: $e';
     } finally {
       setLoading(false);
     }

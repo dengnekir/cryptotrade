@@ -1,4 +1,6 @@
+import 'package:cryptotrade/core/widgets/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../history/view/analysis_history_view.dart';
 import '../../profile/view/profile_view.dart';
@@ -43,25 +45,25 @@ class MainView extends StatelessWidget {
                     viewModel.setCurrentIndex(index);
                   },
                   backgroundColor: Colors.black,
-                  selectedItemColor: Colors.amber,
+                  selectedItemColor: colorss.primaryColor,
                   unselectedItemColor: Colors.grey,
                   type: BottomNavigationBarType.fixed,
                   selectedFontSize: 12,
                   unselectedFontSize: 12,
                   items: const [
                     BottomNavigationBarItem(
-                      icon: Icon(Icons.analytics_outlined),
-                      activeIcon: Icon(Icons.analytics),
+                      icon: Icon(FontAwesomeIcons.chartBar),
+                      activeIcon: Icon(FontAwesomeIcons.chartGantt),
                       label: 'Analiz',
                     ),
                     BottomNavigationBarItem(
-                      icon: Icon(Icons.history_outlined),
-                      activeIcon: Icon(Icons.history),
+                      icon: Icon(FontAwesomeIcons.history),
+                      activeIcon: Icon(FontAwesomeIcons.rotate),
                       label: 'Geçmiş',
                     ),
                     BottomNavigationBarItem(
-                      icon: Icon(Icons.person_outline),
-                      activeIcon: Icon(Icons.person),
+                      icon: Icon(FontAwesomeIcons.personBurst),
+                      activeIcon: Icon(FontAwesomeIcons.child),
                       label: 'Profil',
                     ),
                   ],

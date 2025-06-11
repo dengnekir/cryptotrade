@@ -45,10 +45,16 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
         elevation: 0,
         title: Text(
           widget.initialEmail != null ? 'Şifre Sıfırlama' : 'Şifremi Unuttum',
-          style: const TextStyle(color: Colors.black),
+          style: TextStyle(
+            color: colorss.backgroundColorDark,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         leading: IconButton(
-          icon: const FaIcon(FontAwesomeIcons.arrowLeft, color: Colors.black),
+          icon: FaIcon(
+            FontAwesomeIcons.arrowLeft,
+            color: colorss.backgroundColorDark,
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -63,32 +69,33 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                 widget.initialEmail != null
                     ? 'Şifrenizi sıfırlamak için e-posta adresinize bir bağlantı göndereceğiz.'
                     : 'Şifrenizi sıfırlamak için kayıtlı e-posta adresinizi girin.',
-                style: const TextStyle(
-                  color: Colors.black87,
+                style: TextStyle(
+                  color: colorss.backgroundColorDark,
                   fontSize: 16,
                 ),
               ),
               const SizedBox(height: 24),
               TextFormField(
                 controller: _emailController,
-                style: const TextStyle(color: Colors.black),
+                style: TextStyle(color: colorss.backgroundColorDark),
                 keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   labelText: 'E-posta',
-                  labelStyle: TextStyle(color: Colors.grey[700]),
+                  labelStyle: TextStyle(
+                      color: colorss.backgroundColorDark.withOpacity(0.7)),
                   enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey[300]!),
+                    borderSide: BorderSide(color: colorss.backgroundColorLight),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderSide: const BorderSide(color: Colors.orange),
+                    borderSide: BorderSide(color: colorss.primaryColor),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   filled: true,
-                  fillColor: Colors.grey[100],
-                  prefixIcon: const Icon(
+                  fillColor: colorss.backgroundColorLight.withOpacity(0.1),
+                  prefixIcon: Icon(
                     Icons.email_outlined,
-                    color: Colors.orange,
+                    color: colorss.primaryColor,
                   ),
                 ),
                 validator: (value) {
@@ -104,7 +111,7 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               const SizedBox(height: 24),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
+                  backgroundColor: colorss.primaryColor,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -125,8 +132,8 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
 
                             if (mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text(
+                                SnackBar(
+                                  content: const Text(
                                       'Şifre sıfırlama bağlantısı e-posta adresinize gönderildi'),
                                   backgroundColor: Colors.green,
                                 ),
@@ -186,25 +193,25 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.1),
+                    color: colorss.primaryColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color: Colors.red,
+                      color: colorss.primaryColor,
                       width: 1,
                     ),
                   ),
                   child: Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.error_outline,
-                        color: Colors.red,
+                        color: colorss.primaryColor,
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
                           _errorMessage!,
-                          style: const TextStyle(
-                            color: Colors.red,
+                          style: TextStyle(
+                            color: colorss.primaryColor,
                             fontSize: 14,
                           ),
                         ),
