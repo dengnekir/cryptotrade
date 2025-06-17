@@ -52,7 +52,7 @@ class _AnalysisHistoryViewState extends ConsumerState<AnalysisHistoryView> {
                     title: Row(
                       children: [
                         Icon(Icons.warning_rounded,
-                            color: Colors.orange, size: 32),
+                            color: colorss.primaryColor, size: 32),
                         SizedBox(width: 12),
                         Text(
                           'Tüm Geçmişi Sil',
@@ -116,7 +116,7 @@ class _AnalysisHistoryViewState extends ConsumerState<AnalysisHistoryView> {
               .read(analysisHistoryProvider.notifier)
               .fetchAnalysisHistory();
         },
-        color: Colors.orange.shade600,
+        color: colorss.primaryColor,
         backgroundColor: Colors.white,
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -129,7 +129,7 @@ class _AnalysisHistoryViewState extends ConsumerState<AnalysisHistoryView> {
               if (historyState.isLoading)
                 Center(
                   child: CircularProgressIndicator(
-                    color: Colors.orange.shade600,
+                    color: colorss.primaryColor,
                   ),
                 )
               else if (historyState.error != null)
@@ -151,7 +151,7 @@ class _AnalysisHistoryViewState extends ConsumerState<AnalysisHistoryView> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Colors.orange.shade50,
+            colorss.primaryColor,
             Colors.white,
           ],
           begin: Alignment.topLeft,
@@ -159,7 +159,7 @@ class _AnalysisHistoryViewState extends ConsumerState<AnalysisHistoryView> {
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Colors.orange.withOpacity(0.2),
+          color: colorss.backgroundColor.withOpacity(0.2),
           width: 1,
         ),
       ),
@@ -170,7 +170,7 @@ class _AnalysisHistoryViewState extends ConsumerState<AnalysisHistoryView> {
             children: [
               Icon(
                 Icons.history,
-                color: Colors.orange.shade700,
+                color: colorss.primaryColorDark,
                 size: 32,
               ),
               const SizedBox(width: 12),
@@ -281,7 +281,7 @@ class _AnalysisHistoryViewState extends ConsumerState<AnalysisHistoryView> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Colors.orange.shade50,
+            colorss.primaryColor.withAlpha(1),
             Colors.white,
           ],
           begin: Alignment.topLeft,
@@ -289,7 +289,7 @@ class _AnalysisHistoryViewState extends ConsumerState<AnalysisHistoryView> {
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: Colors.orange.withOpacity(0.1),
+          color: colorss.primaryColor.withOpacity(0.1),
         ),
       ),
       child: ExpansionTile(
